@@ -1,0 +1,123 @@
+/* ===========================
+   Marca "Mira y Calcula"
+   Letras reactivas: entran al cargar, se levantan
+   cuando el puntero (o el dedo) pasa cerca y saltan al tocarlas.
+   La lógica vive en src/js/marca.js
+   =========================== */
+
+.marca{
+  --marca-size: clamp(3.2rem, 12vw, 6rem);
+  --marca-color: #ffffff;
+  --marca-acento: #ffd600;
+  --marca-sombra: #001b2f;
+
+  margin: 0;
+  font-family: 'Fredoka', 'Baloo 2', system-ui, sans-serif;
+  font-size: var(--marca-size);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  color: var(--marca-color);
+  text-wrap: balance;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Cada palabra no se parte; el salto de línea ocurre entre palabras */
+.marca-palabra{
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.marca-palabra + .marca-palabra{
+  margin-left: 0.22em;
+}
+
+.marca-palabra--acento{
+  color: var(--marca-acento);
+}
+
+/* La "y" va más pequeña y ligeramente girada */
+.marca-palabra--union{
+  font-size: 0.62em;
+  font-weight: 600;
+  vertical-align: 0.18em;
+  color: var(--marca-acento);
+}
+
+/* Capa externa: animación de entrada */
+.marca-letra{
+  display: inline-block;
+  animation: marca-entrada 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--i, 0) * 45ms + 120ms);
+}
+
+/* Capa interna: reacción al puntero y al toque */
+.marca-glifo{
+  --lift: 0;
+  --dir: 0;
+  display: inline-block;
+  cursor: pointer;
+  transform:
+    translateY(calc(var(--lift) * -0.22em))
+    scale(calc(1 + var(--lift) * 0.16))
+    rotate(calc(var(--dir) * var(--lift) * 9deg));
+  text-shadow:
+    0 calc(0.04em + var(--lift) * 0.08em) calc(0.06em + var(--lift) * 0.14em) color-mix(in srgb, var(--marca-sombra) 75%, transparent);
+  transition:
+    transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    text-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.25s ease;
+}
+
+.marca-glifo.is-salto{
+  animation: marca-salto 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes marca-entrada{
+  from{
+    opacity: 0;
+    transform: translateY(0.6em) rotate(-8deg);
+    filter: blur(6px);
+  }
+  to{
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+
+@keyframes marca-salto{
+  0%   { transform: translateY(0) scale(1); }
+  30%  { transform: translateY(-0.38em) scale(1.2, 0.9) rotate(-6deg); }
+  55%  { transform: translateY(0.04em) scale(0.92, 1.1); }
+  75%  { transform: translateY(-0.08em) scale(1.04); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .marca-letra,
+  .marca-glifo.is-salto{
+    animation: none;
+  }
+
+  .marca-glifo{
+    transform: none;
+    transition: color 0.2s ease;
+  }
+
+  .marca-glifo:hover{
+    color: var(--marca-acento);
+  }
+}
+
+/* Gana sobre estilos de encabezado heredados (p. ej. estiloMenu.css) */
+.hero-header h1.marca{
+  font-family: 'Fredoka', 'Baloo 2', system-ui, sans-serif;
+  font-size: var(--marca-size);
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--marca-color);
+  text-shadow: none;
+}
