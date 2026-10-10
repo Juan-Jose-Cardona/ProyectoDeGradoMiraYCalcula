@@ -1,0 +1,52 @@
+body{
+    background:#004479;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.panel{
+    background:white;
+    width:480px;
+    padding:40px;
+    border-radius:20px;
+    position:relative;
+    box-shadow:0 0 40px rgba(0,0,0,0.3);
+}
+
+.btn-volver{
+    position:absolute;
+    top:10px;
+    left:10px;
+    background:#0066A1;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    border-radius:10px;
+    font-size:1.2rem;
+    cursor:pointer;
+}
+
+.grid-menu{
+    margin-top:40px;
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:20px;
+}
+
+.grid-menu button{
+    background:#00335C;
+    color:white;
+    font-size:1.2rem;
+    padding:25px 10px;
+    border-radius:14px;
+    border:3px solid #0C5A9A;
+    cursor:pointer;
+    transition:.2s;
+    font-weight:bold;
+}
+
+.grid-menu button:hover{
+    transform:scale(1.05);
+}

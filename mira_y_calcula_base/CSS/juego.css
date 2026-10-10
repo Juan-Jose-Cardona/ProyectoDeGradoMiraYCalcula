@@ -1,0 +1,95 @@
+*{
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+}
+
+/* ======= CANVAS 3D ======= */
+#gameCanvas{
+    position: fixed;
+    top:0; left:0;
+    width:100vw;
+    height:100vh;
+    z-index:-1;
+    background-color:#15522D; /* verde paleta */
+}
+
+/* ======= BOTÓN VOLVER ======= */
+.btn-volver {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background:#D93025;
+    color:white;
+    font-weight:bold;
+    padding:8px 14px;
+    border-radius:8px;
+    text-decoration:none;
+    z-index:20;
+}
+
+/* ======= PANEL CENTRAL UI ======= */
+#gameUI{
+    position:fixed;   
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
+    width:420px;
+    background:#FFFFFF;
+    padding:35px 40px;
+    border-radius:18px;
+    border:4px solid #004479;
+    box-shadow:0 0 20px rgba(0,0,0,0.25);
+    z-index:15;
+    text-align:center;
+}
+
+/* TÍTULO */
+.tituloUI{
+    color:#004479;
+    font-size:2rem;
+    font-weight:800;
+    margin-bottom:10px;
+}
+
+/* TEXTO */
+.descripcionUI{
+    color:#747476;
+    font-size:1rem;
+    margin-bottom:25px;
+}
+
+/* BOTONES */
+.boton{
+    background:#FFD400;
+    width:100%;
+    padding:12px 0;
+    border:none;
+    font-size:1.1rem;
+    border-radius:10px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.boton:hover{ filter:brightness(1.1); }
+
+#opciones{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    justify-content:center;
+    margin-top:15px;
+}
+
+.opcion{
+    background:#FFD400;
+    padding:10px 20px;
+    border-radius:10px;
+    border:none;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.opcion:hover{
+    transform:scale(1.1);
+    background:#FFC300;
+}

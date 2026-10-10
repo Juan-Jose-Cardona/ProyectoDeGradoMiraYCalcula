@@ -1,0 +1,346 @@
+
+*{
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+}
+
+/* === ESTILO BASE (del juego operaciones) === */
+:root{
+  --bg:#004479;
+  --panel:#0071BC;
+  --panel-dark:#005A96;
+  --accent:#FFD800;
+  --muted:#2e3338;
+  --correct-glow: 0 0 18px 6px rgba(24,200,60,0.9);
+  --tdah-colors: #ff6b6b,#ffd93d,#6be3ff,#9b5cff,#6bff9a,#ff8ab6;
+}
+
+body{
+    background:#004479;
+    display:flex;
+    height:100vh;
+    justify-content:center;
+    align-items:center;
+    font-family: Inter, Arial, Helvetica, sans-serif;
+}
+
+.panel-juego{
+    background:#0071BC;
+    width: 900px;
+    height: 85vh;
+    padding:20px;
+    border-radius:20px;
+    box-shadow:0 0 40px rgba(0,0,0,0.3);
+    position:relative;
+    display:flex;
+    flex-direction:column;
+}
+
+.btn-volver{
+    position:absolute;
+    top:10px;
+    left:10px;
+    background:#0066A1;
+    padding:10px 20px;
+    border-radius:10px;
+    color:white;
+    border:none;
+    cursor:pointer;
+    font-size:1.2rem;
+}
+.pregunta-bar{
+    background:#FFD800;
+    color:black;
+    font-size:1.8rem;
+    padding:12px 20px;
+    border-radius:10px;
+    text-align:left;
+    margin-top:40px;
+    font-weight:bold;
+}
+
+/* === ÁREA DEL PUZZLE === */
+#stage{
+    position:relative;
+    flex:1;
+    margin-top:20px;
+    background:#005A96;
+    border-radius:12px;
+    overflow:hidden;
+    border:3px solid #003f64;
+}
+
+.board {
+  position: absolute;
+  background: rgba(255,255,255,0.05);
+  border: 2px dashed rgba(255,255,255,0.15);
+  border-radius: 12px;
+  backdrop-filter: blur(3px);
+}
+
+/* SVG figura objetivo (invisible shapes & clipPaths) 
+#figure-svg{
+  position:absolute;
+  width:420px;
+  height:420px;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+
+/* Ensamblaje guía (overlay) */
+#assembly-guide{
+  position:absolute;
+  width:420px;
+  height:420px;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+  border-radius:8px;
+  transition:opacity 240ms ease, transform 240ms ease;
+  opacity:1;
+}
+
+/* PIEZAS (contendedores de cada pieza) */
+.piece {
+  position: absolute;
+  touch-action: none;
+  user-select: none;
+  cursor:grab;
+  border-radius:0px;
+  will-change: left, top, transform;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:visible;
+}
+
+/* cuando se arrastra */
+.piece.dragging{
+  transform: scale(1.03);
+  cursor:grabbing;
+  z-index: 9999;
+}
+
+
+
+/* etiqueta de medida */
+.piece .label-top{
+    position:absolute;
+    top:-30px;
+    left:50%;
+    transform:translateX(-50%);
+    padding:4px 8px;
+    border-radius:6px;
+    font-size:1rem;
+    font-weight:400;
+    color:white;
+    pointer-events:none;
+}
+
+.piece .label-bottom{
+    position:absolute;
+    bottom:-30px;
+    left:50%;
+    transform:translateX(-50%);
+    padding:4px 8px;
+    border-radius:6px;
+    font-size:1rem;
+    font-weight:400;
+    color:white;
+    pointer-events:none;
+}
+
+
+.piece .label-left{
+  position:absolute;
+  left:-30px;
+  top:100%;
+  transform:translateY(-50%) rotate(-90deg);
+  transform-origin:left top;
+  padding:4px 8px;
+  border-radius:6px;
+  font-size: 1rem;
+  font-weight:400;
+  color:white;
+  pointer-events:none;
+}
+.piece .label-right{
+  position:absolute;
+  right:-60px;
+  top:100%;
+  transform:translateY(-50%) rotate(-90deg);
+  transform-origin:left top;
+  padding:4px 8px;
+  border-radius:6px;
+  font-size: 1rem;
+  font-weight:400;
+  color:white;
+  pointer-events:none;
+}
+
+
+
+.modal-oculto {
+    display: none;
+}
+
+#modalExplicacion {
+    position: fixed; /* Mejor que absolute para modales */
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 30px 40px; /* un poco más de espacio lateral */
+    border-radius: 14px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    z-index: 9999;
+    align-items: center; /* centra horizontalmente el contenido */
+    gap: 20px; /* espacio entre texto y botón */
+}
+
+.modal-contenido {
+    text-align: center;
+    font-size: 22px;
+    align-self: center;
+  }
+
+.btn-cerrar-modal {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background: #ffd800;
+    border: none;
+    border-radius: 12px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+
+
+
+/* botón y footer */
+footer.controls{
+  margin-top:10px;
+  padding-top:8px;
+}
+.controls-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  width:100%;
+}
+.left-controls{display:flex;gap:8px}
+.control-btn{
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.06);
+  color:white;
+  padding:8px 12px;
+  border-radius:8px;
+  cursor:pointer;
+}
+#status{
+  font-weight:600;
+  font-size:1.3rem;
+  color:#fff;
+  text-align:right;
+
+}
+/* ocultar los labels en pantallas muy pequeñas */
+@media (max-width:980px){
+  .panel-juego{ width: 94vw; height: 94vh; }
+  #figure-svg, #assembly-guide { width:340px; height:340px; left:10px; top:10px; }
+}
+
+#missionText {
+  font-size: 1.3rem;
+  color: #000000;
+  margin-bottom: 20;
+  text-align: justify;
+    font-weight: bold;          
+    line-height: 1.5;
+}
+
+
+button {
+  cursor: pointer;
+  border: none;
+  background: #444;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: background 0.2s;
+  font-size: 1.3rem   ;
+}
+button:hover {
+  background: #666;
+}
+
+#controlesMusica {
+    position: fixed;
+    bottom: 18px;
+    right: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#btnMute {
+    font-size: 28px;
+    border: none;
+    background: #2979ff;
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+#volumenMusica {
+    width: 120px;
+    max-width: 40vw;
+}
+
+
+#btnAyuda{
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #1c5cff;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 12px;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    z-index: 999;
+}
+
+.modal{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-contenido{
+    background: white;
+    padding: 24px;
+    border-radius: 18px;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(0,0,0,.4);
+}
+
+.btn-cerrar{
+    margin-top: 14px;
+    padding: 10px 20px;
+    background: #00C851;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1rem;
+}

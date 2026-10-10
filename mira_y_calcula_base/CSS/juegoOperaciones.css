@@ -1,0 +1,204 @@
+body{
+    background:#004479;
+    display:flex;
+    min-height:100vh;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    box-sizing:border-box;
+}
+
+.panel-juego{
+    background:#0071BC;
+    width:95vw;
+    max-width:650px;
+    padding:20px;
+    border-radius:20px;
+    box-shadow:0 0 40px rgba(0,0,0,0.3);
+    position:relative;
+    box-sizing:border-box;
+}
+
+.btn-volver{
+    position:absolute;
+    top:10px;
+    left:10px;
+    background:#0066A1;
+    padding:10px 20px;
+    border-radius:10px;
+    color:white;
+    border:none;
+    cursor:pointer;
+    font-size:clamp(0.85rem, 2.2vw, 1rem);
+}
+
+.pregunta-bar{
+    background:#FFD800;
+    color:black;
+    font-size:clamp(1rem, 2.5vw, 1.8rem);
+    padding:12px 20px;
+    border-radius:10px;
+    text-align:left;
+    margin-top:40px;
+    font-weight:bold;
+}
+
+.grid{
+    margin-top:20px;
+    display:grid;
+    width:100%;
+    grid-template-columns: repeat(auto-fit, minmax(48px, 1fr));
+    gap:6px;
+    box-sizing:border-box;
+}
+
+.celda{
+    width:100%;
+    aspect-ratio:1 / 1;
+    background:#145A1E;
+    border:3px solid #D33108;
+    border-radius:6px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:white;
+    font-size:clamp(0.9rem, 1.6vw, 1.4rem);
+    cursor:pointer;
+    user-select:none;
+}
+
+.oculta{
+    background:#145A1E;
+    color:transparent;
+}
+
+.visible{
+    background:#2ECC71;
+    color:black;
+    font-weight:bold;
+}
+
+/* Animaciones */
+@keyframes pop {
+    0% { transform: scale(0.2); opacity: 0; }
+    80% { transform: scale(1.15); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes closeAnim {
+    from { transform: scale(1); opacity: 1; }
+    to { transform: scale(0.2); opacity: 0; }
+}
+
+.visible { animation: pop 0.18s ease-out; }
+.oculta.anim-cerrar { animation: closeAnim 0.15s ease-out; }
+
+.btn-siguiente{
+    margin-top:20px;
+    background:#00C851;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:clamp(1rem, 2.3vw, 1.3rem);
+    display:none;
+    width:100%;
+}
+.btn-siguiente:hover{
+    background:#00B145;
+}
+
+/* Responsivo */
+@media (max-width: 900px) {
+    .panel-juego{ padding:16px; }
+    .grid{ grid-template-columns: repeat(auto-fit, minmax(44px, 1fr)); }
+}
+
+@media (max-width: 600px) {
+    .panel-juego{ padding:14px; }
+    .grid{ grid-template-columns: repeat(auto-fit, minmax(40px, 1fr)); }
+}
+
+@media (max-width: 420px) {
+    body{ align-items:flex-start; padding-top:18px; }
+    .panel-juego{ padding:12px; }
+}
+.btnAyuda{
+    margin-top:15px;
+    background:#ffb300;
+    color:black;
+    padding:10px 18px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
+    font-size:clamp(0.9rem,2vw,1rem);
+}
+.btnAyuda:hover{
+    background:#ffca28;
+    transform:scale(1.05);
+    transition:0.2s;
+}
+/* ===== MODAL DE AYUDA ===== */
+#btnAyuda{
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #1c5cff;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 12px;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    z-index: 999;
+}
+
+.modal{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-contenido{
+    background: white;
+    padding: 24px;
+    border-radius: 18px;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(0,0,0,.4);
+}
+
+.btn-cerrar{
+    margin-top: 14px;
+    padding: 10px 20px;
+    background: #00C851;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1.1rem;
+}
+.mensaje-error{
+    display:none;
+    background:#ff4b4b;
+    color:white;
+    padding:10px;
+    margin-top:12px;
+    border-radius:10px;
+    text-align:center;
+    font-weight:bold;
+    animation: aparecer 0.3s ease-out;
+}
+
+@keyframes aparecer{
+    from { opacity:0; transform:scale(0.95); }
+    to   { opacity:1; transform:scale(1); }
+}
+

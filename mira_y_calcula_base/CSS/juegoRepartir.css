@@ -1,0 +1,347 @@
+body {
+    margin: 0;
+    font-family: 'Arial Rounded MT Bold', Arial, sans-serif;
+    background: #003e70;
+    box-sizing: border-box;
+    padding: 12px;
+}
+
+.panel-juego {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.btn-volver {
+    background: #004a9f;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 12px;
+    font-size: clamp(0.9rem, 2.2vw, 1.35rem);
+    cursor: pointer;
+    margin: 18px;
+}
+
+.pregunta-bar {
+    background: #ffd800;
+    width: 100%;
+    max-width: 980px;
+    margin: 10px auto 0 auto;
+    padding: 14px 18px;
+    border-radius: 16px;
+    text-align: center;
+    font-size: clamp(1rem, 2.6vw, 1.9rem);
+    font-weight: bold;
+}
+
+.contenedor-principal {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.grid {
+    flex: 1 1 48%;
+    min-width: 260px;
+    min-height: 200px;
+    background: #004a9f;
+    padding: 20px;
+    border-radius: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    box-sizing: border-box;
+}
+
+.cestas {
+    flex: 1 1 48%;
+    min-width: 260px;
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+}
+
+.cesta {
+    width: 100%;
+    max-width: 360px;
+    min-height: 220px;
+    background: #ddb77a;
+    border: 4px solid #c48d4d;
+    border-radius: 14px;
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    box-sizing: border-box;
+}
+
+.objeto {
+    width: clamp(48px, 8vw, 70px);
+    height: clamp(48px, 8vw, 70px);
+    cursor: grab;
+}
+
+.zona-botones {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.btn-completar {
+    background: #00c853;
+    color: white;
+    font-size: clamp(0.95rem, 2.2vw, 1.25rem);
+    padding: 12px 20px;
+    border-radius: 16px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-siguiente {
+    background: #2979ff;
+    color: white;
+    font-size: clamp(0.95rem, 2.2vw, 1.25rem);
+    padding: 12px 20px;
+    border-radius: 16px;
+    border: none;
+    cursor: pointer;
+    display: none;
+}
+
+/* MODAL */
+.modal-oculto {
+    display: none;
+}
+
+#modalExplicacion {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    z-index: 9999;
+}
+
+.modal-contenido {
+    text-align: center;
+    font-size: 22px;
+}
+
+.btn-cerrar-modal {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background: #ffd800;
+    border: none;
+    border-radius: 12px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+/* CONTROLES DE MÚSICA */
+#controlesMusica {
+    position: fixed;
+    bottom: 18px;
+    right: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#btnMute {
+    font-size: 28px;
+    border: none;
+    background: #2979ff;
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+#volumenMusica {
+    width: 120px;
+    max-width: 40vw;
+}
+
+/* --- Media queries para responsividad --- */
+@media (max-width: 900px) {
+    .pregunta-bar { padding: 12px 14px; }
+    .contenedor-principal { gap: 16px; }
+    .grid, .cajas { flex: 1 1 48%; min-width:220px; }
+    .caja { max-width: 320px; }
+}
+
+@media (max-width: 600px) {
+    .contenedor-principal { flex-direction: column; align-items: stretch; }
+    .grid, .cajas { flex: 1 1 100%; min-width: 0; }
+    .grid { order: 2; }
+    .cajas { order: 1; }
+    .caja { max-width: 100%; min-height: 160px; }
+    .pregunta-bar { font-size: clamp(0.95rem, 4.2vw, 1.4rem); }
+    #controlesMusica { right: 8px; bottom: 8px; }
+}
+
+@media (max-width: 420px) {
+    .btn-volver { margin: 10px; padding: 8px 12px; }
+    .pregunta-bar { padding: 10px 12px; }
+    .objeto { width: clamp(42px, 12vw, 60px); height: clamp(42px, 12vw, 60px); }
+}
+
+/* ===============================
+   RESPONSIVE (igual a Multiplicación)
+   Pegar AL FINAL de juegoRepartir.css
+   =============================== */
+
+/* Evitar scroll horizontal */
+html, body { overflow-x: hidden; }
+
+/* Estructura PC: 2 columnas (cestas | grid) */
+.contenedor-principal{
+  display: flex !important;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* Columna de cestas */
+.cestas{
+  flex: 1 1 48%;
+  min-width: 260px;
+  display: flex !important;
+  justify-content: space-around;
+  gap: 20px;
+}
+
+/* Cada cesta (caja) */
+.cesta{
+  width: 100%;
+  max-width: 360px;
+  min-height: 220px;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  box-sizing: border-box;
+}
+
+/* Columna de objetos */
+.grid{
+  flex: 1 1 48%;
+  min-width: 260px;
+  box-sizing: border-box;
+
+  /* Para que se ordenen como “galletas/huevos” en bloque */
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+/* Tamaño de objetos (huevos/galletas) adaptable */
+.objeto{
+  width: clamp(48px, 8vw, 70px);
+  height: clamp(48px, 8vw, 70px);
+}
+
+/* --- MÓVIL: apila, cestas arriba y grid abajo --- */
+@media (max-width: 600px){
+  .contenedor-principal{
+    flex-direction: column !important;
+    align-items: stretch;
+  }
+
+  .cestas, .grid{
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+
+  /* Orden igual a multiplicación */
+  .cestas{ order: 1; }
+  .grid{ order: 2; }
+
+  .cesta{
+    max-width: 100%;
+    min-height: 160px;
+  }
+
+  /* Controles música menos invasivos */
+  #controlesMusica{
+    right: 8px;
+    bottom: 8px;
+  }
+}
+
+
+/*  WRAP REAL mantener horizontal y solo bajar cuando no quepa
+   Pegar AL FINAL de juegoRepartir.css  */
+
+.cestas{
+  display: flex;
+  flex-wrap: wrap;            /* baja a otra fila solo si no cabe */
+  justify-content: flex-start;/* se mantiene “normal” como ahora */
+  align-items: flex-start;
+  gap: 20px;                  /* conserva separación */
+}
+
+/* Cada cesta NO debe ocupar 100% (eso la vuelve vertical) */
+.cesta{
+  flex: 0 0 140px;
+  max-width: 140px;
+  min-width: 140px;
+
+  height: auto;          /* alto automatico para qeu no se salgan los objetos */
+  min-height: 280px;    
+
+  display: flex;
+  flex-wrap: wrap;       /* que los objetos bajen dentro de la cesta */
+  align-content: flex-start;
+  gap: 10px;             
+
+  box-sizing: border-box;
+  overflow: visible;     
+}
+
+/* En pantallas medianas/grandes, permite cestas un poco más anchas */
+@media (min-width: 900px){
+  .cesta{
+    flex-basis: 150px;
+    max-width: 150px;
+  }
+}
+
+/* En pantallas pequeñas, reduce un poco para que quepan más antes de bajar */
+@media (max-width: 600px){
+  .cestas{
+    justify-content: center;  /* más bonito en móvil */
+  }
+  .cesta{
+    flex-basis: 120px;
+    max-width: 120px;
+    height: 240px;
+  }
+}
+
+/* Centrar el texto (barra amarilla) en celular */
+@media (max-width: 600px){
+  .pregunta-bar{
+    width: min(92vw, 560px);
+    margin: 12px auto 0 auto;   /* centra la barra */
+    text-align: center;         /* centra el texto */
+    padding-left: 14px;         /* evita que quede “pegado” */
+    padding-right: 14px;
+    box-sizing: border-box;
+  }
+
+  #textoProblema{
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}
+

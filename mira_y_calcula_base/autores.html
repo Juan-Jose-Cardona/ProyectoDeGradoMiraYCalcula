@@ -1,0 +1,286 @@
+<!--
+    Author(a): Angie Natalia, Santiago Ramirez y Juan Jose Cardona
+    Date of the creation: 24/11/2025
+    Last Modification: 24/11/2025
+
+    Recurda el truco de ctrol+D
+-->
+
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Autores | Mira & Calcula</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+  <!-- CSS Autores -->
+  <link rel="stylesheet" href="./CSS/estiloAutores.css">
+  <link rel="stylesheet" href="./CSS/formatosNavbar.css">
+
+</head>
+
+<body>
+
+  <!-- Botón volver -->
+  <a href="index.html" class="btn btn-dark back-btn" aria-label="Volver a Inicio">
+    <i class="bi bi-arrow-left"></i>
+  </a>
+
+  <main>
+
+    <!--CAROUSEL-->
+    <div id="myCarousel" class="carousel slide" data-bs-ride="carousel">
+
+      <div class="carousel-indicators">
+        <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active"></button>
+        <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="1"></button>
+        <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="2"></button>
+      </div>
+
+      <div class="carousel-inner">
+
+        <div class="carousel-item active">
+          <div class="hero-bg"></div>
+          <div class="container">
+            <div class="carousel-caption text-start">
+              <h1>Autores</h1>
+              <p class="lead">Equipo desarrollador de “Mira & Calcula”</p>
+              <p>
+                <a class="btn btn-lg btn-warning" href="#equipo">Ver equipo</a>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="carousel-item">
+          <div class="hero-bg"></div>
+          <div class="container">
+            <div class="carousel-caption">
+              <h1>Propósito</h1>
+              <p class="lead">
+                Apoyar el aprendizaje de matemáticas en el programa de inmersión al español de Adelante Selby.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="carousel-item">
+          <div class="hero-bg"></div>
+          <div class="container">
+            <div class="carousel-caption text-end">
+              <h1>Gracias</h1>
+              <p class="lead">Gracias por explorar el proyecto.</p>
+              <p>
+                <a class="btn btn-lg btn-outline-light" href="index.html#bloque2">
+                  Ir a actividades
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+      </button>
+
+    </div>
+    <!--/CAROUSEL-->
+
+
+    <!--MARKETING-->
+    <div class="container marketing" id="equipo">
+
+      <div class="row">
+        <div class="col-lg-4">
+          <div class="marketing-avatar"><i class="bi bi-person-fill"></i></div>
+          <h2 class="fw-normal">Angie Natalia Guevara</h2>
+          <p>Developer</p>
+
+            <!-- boton para mostrar info -->
+            <p>
+                <button type="button"
+                        class="btn btn-secondary author-details-btn"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalAngie">
+                Ver detalles »
+                </button>
+            </p>
+
+        </div>
+
+        <div class="col-lg-4">
+          <div class="marketing-avatar"><i class="bi bi-person-fill"></i></div>
+          <h2 class="fw-normal">Santiago Ramírez Poso</h2>
+          <p>Developer</p>
+
+            <!-- boton para mostrar info -->
+            <p>
+                <button type="button"
+                        class="btn btn-secondary author-details-btn"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalSantiago">
+                Ver detalles »
+                </button>
+            </p>
+
+        </div>
+
+        <div class="col-lg-4">
+          <div class="marketing-avatar"><i class="bi bi-person-fill"></i></div>
+          <h2 class="fw-normal">Juan José Cardona Serna</h2>
+          <p>Developer</p>
+
+          <!-- boton para mostrar info -->
+            <p>
+                <button type="button"
+                        class="btn btn-secondary author-details-btn"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalJuan">
+                Ver detalles »
+                </button>
+            </p>
+
+        </div>
+      </div>
+
+      <hr class="featurette-divider">
+
+      <!--FEATURETTES-->
+      <div class="row featurette align-items-center">
+        <div class="col-md-7">
+          <h2 class="featurette-heading">
+            Supervisión 
+            
+          </h2>
+          <p class="lead">Mayra Alejandra Cardona</p>
+          
+        </div>
+        <div class="col-md-5">
+          <div class="featurette-img">photo_placeholder</div>
+        </div>
+      </div>
+
+      <hr class="featurette-divider">
+
+    </div>
+
+  </main>
+
+  <!-- Sección inferior de presentación -->
+    <section class="school-footer" id="presentacion">
+      <div class="container py-5">
+        <div class="row gy-4">
+
+          <!-- Columna 1: nombre de la escuela y dirección -->
+          <div class="col-lg-5">
+            <h2 class="school-footer-title">
+              Adelante Selby Escuela de Inmersión al Español
+            </h2>
+            <p class="school-footer-text mb-1">170 Selby Lane</p>
+            <p class="school-footer-text mb-1">Atherton, California 94027</p>
+            <p class="school-footer-text mb-0">Tel: 650.482.2415</p>
+          </div>
+
+          <!-- Columna 2: descripción del proyecto -->
+          <div class="col-md-4">
+            <h5 class="school-footer-subtitle">Sobre este proyecto</h5>
+            <p class="school-footer-text">
+              “Mira & Calcula” es una página interactiva cuyo 
+              objetivo es apoyar el aprendizaje de las matemáticas 
+              en el programa de inmersión al español de Adelante Selby.
+            </p>
+          </div>
+
+          <!-- Columna 3: links / redes -->
+          <div class="col-md-3">
+            <h5 class="school-footer-subtitle">Síganos</h5>
+            <div class="d-flex flex-column gap-2">
+              <a href="https://adelanteselby.rcsdk8.net/" class="school-footer-link">Página de la escuela</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!--pop ups-->
+
+    <!-- Modal Angie -->
+    <div class="modal fade" id="modalAngie" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content author-modal">
+                
+                <div class="modal-header">
+                    <h5 class="modal-title">Angie Natalia Guevara</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                
+                <div class="modal-body">
+                    <p class="mb-2"><strong>Rol:</strong> Developer</p>
+                    <p class="mb-0">Description Placeholder.</p>
+                </div>
+            
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Santiago -->
+    <div class="modal fade" id="modalSantiago" tabindex="-1" aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content author-modal">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Santiago Ramírez Poso</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+
+                <div class="modal-body">
+                    <p class="mb-2"><strong>Rol:</strong> Developer</p>
+                    <p class="mb-0">Description Placeholder.</p>
+                </div>
+            
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Juan -->
+    <div class="modal fade" id="modalJuan" tabindex="-1" aria-hidden="true">
+        
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content author-modal">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Juan José Cardona Serna</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                
+                <div class="modal-body">
+                    <p class="mb-2"><strong>Rol:</strong> Developer</p>
+                    <p class="mb-0">Description Placeholder.</p>
+                </div>
+            
+            </div>
+        </div>
+    </div>
+
+</body>
+
+
+</html>
