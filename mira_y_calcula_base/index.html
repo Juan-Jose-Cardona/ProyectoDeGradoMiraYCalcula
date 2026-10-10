@@ -11,7 +11,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Watch & Calculate - Adelante Selby</title>
+    <title>Mira & Calcula</title>
     
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
@@ -34,8 +34,17 @@
     <!--js-->
     <script src="./src/js/vectorCalcular.js"></script>
 
+    <!--Tipografía de la marca-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <!--formato navbar-->
     <link rel="stylesheet" href="./CSS/formatosNavbar.css">
+    <!--marca reactiva "Mira y Calcula"-->
+    <link rel="stylesheet" href="./CSS/marca.css">
+    <script src="./src/js/marca.js" defer></script>
+    <script src="./src/js/inicio.js" defer></script>
 
     <!--Importar iconos-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
@@ -88,90 +97,104 @@
     </div>
     
     
-    <header class="hero-header d-flex flex-column align-items-center text-center" 
-        style="height: 100vh; 
-            background-image: linear-gradient(to bottom, #ffffff00, #00457900), 
-                                url('./src/img/HeroHeader-01.png'); 
-            background-size: cover; 
-            background-position: center; 
-            background-repeat: no-repeat; 
-            color: white; 
-            position: relative; 
-            padding: 20px;">
+    <!-- Escenario: el header y Bienvenidos comparten el mismo papel cuadriculado -->
+    <div class="escenario">
 
-        <h1 class="hero-title" 
-            style="position: relative; 
-                z-index: 1; 
-                font-size: 5rem; 
-                margin-top: auto; 
-                margin-bottom: 100px;">
-            
-        </h1>
+    <header class="hero-header" id="inicio" data-parallax>
+
+        <!-- Símbolos flotantes (decorativos) -->
+        <div class="hero-simbolos" aria-hidden="true">
+            <span class="simbolo" style="--x: 8%;  --y: 18%; --d: 1.4; --t: 9s;">+</span>
+            <span class="simbolo" style="--x: 84%; --y: 14%; --d: 0.8; --t: 11s;">×</span>
+            <span class="simbolo" style="--x: 14%; --y: 72%; --d: 1.1; --t: 10s;">÷</span>
+            <span class="simbolo" style="--x: 78%; --y: 70%; --d: 1.6; --t: 8s;">−</span>
+            <span class="simbolo" style="--x: 50%; --y: 86%; --d: 0.6; --t: 12s;">=</span>
+            <span class="simbolo simbolo--figura" style="--x: 90%; --y: 42%; --d: 1.2; --t: 13s;"></span>
+            <span class="simbolo simbolo--figura" style="--x: 4%;  --y: 44%; --d: 0.9; --t: 10s;"></span>
+        </div>
+
+        <div class="hero-contenido">
+            <h1 class="marca" data-marca>Mira y Calcula</h1>
+            <p class="hero-lema">Operaciones básicas y figuras, jugando.</p>
+            <a class="hero-cta" href="#bloque2">
+                <i class="bi bi-play-fill" aria-hidden="true"></i> Empezar a jugar
+            </a>
+        </div>
+
+        <a class="hero-bajar" href="#bloque1" aria-label="Bajar a Bienvenidos">
+            <i class="bi bi-chevron-down" aria-hidden="true"></i>
+        </a>
     </header>
     
 
-    <section style="background-color: #004479;">
-        <br><br>
-        <div class="container text-center">
+    <!-- Bloque 1: Bienvenidos + Objetivos, con el modelo 3D integrado al escenario -->
+    <section class="mundo" id="bloque1" data-parallax>
 
-            <!-- Bloque 1 -->
-            <div class="container my-5" id="bloque1">
-                <div class="row justify-content-center">
-                    <div class="col-lg-10">
-                        <div style="background-color: #001b2f; border: 10px solid #ffffff; border-radius: 30px; padding: 20px; box-shadow: 2px 2px 8px rgba(255,255,255,0.2);">
-                            <div class="row align-items-center">
-                                <div class="col-md-6">
-                                    <h3 class="mb-3" style="font-family: 'Georgia', serif; font-size: 3rem; letter-spacing: 1.5px; color: #ffffff; text-shadow: 2px 2px 3px rgba(255,255,255,0.3); font-style: italic;">
-                                        Bienvenidos
-                                    </h3>
-                                    <p style="text-align: justify; color: #f0f0f0;">
-                                        Mira & Calcula es una página interactiva 
-                                        donde los niños pueden reforzar sus conocimientos 
-                                        en la resolución de problemas por medio de operaciones básicas 
-                                        y desarrollar la capacidad de 
-                                        identificar propiedades de figuras irregulares compuestas 
-                                        por figuras cuadradas.
-                                    </p>
-                                    
-                                    <br>
+        <div class="hero-simbolos" aria-hidden="true">
+            <span class="simbolo" style="--x: 6%;  --y: 8%;  --d: 0.7; --t: 11s;">×</span>
+            <span class="simbolo simbolo--figura" style="--x: 44%; --y: 90%; --d: 1.1; --t: 12s;"></span>
+            <span class="simbolo" style="--x: 92%; --y: 88%; --d: 0.9; --t: 9s;">+</span>
+        </div>
 
-                                    <h3 class="mb-3" style="font-family: 'Georgia', serif; font-size: 3rem; letter-spacing: 1.5px; color: #ffffff; text-shadow: 2px 2px 3px rgba(255,255,255,0.3); font-style: italic;">
-                                        Objetivos
-                                    </h3>
+        <div class="mundo-grid">
 
-                                    <ul class="objetivos-list">
-                                        <li>
-                                            Desarrollar una página en HTML 
-                                            que sea accesible para los niños que presentan 
-                                            dificultades a la hora de aprender conceptos de matemáticas de tercer 
-                                            grado.
-                                        </li>
-                                        <li>
-                                            Determinar las mejores formas de captar 
-                                            la atención infantil de los niños de la institución.
-                                        </li>
-                                        <li>
-                                            Lograr comprender la actitud de los niños con el fin de crear, con precisión, minijuegos 
-                                            que los niños puedan entender.
-                                        </li>
-                                    </ul>
-
-                                </div>
-                                <div class="col-md-6">
-                                    <model-viewer 
-                                        src="./src/3Dmodels/Signos/signosMatematicos.glb" 
-                                        alt="MathSymbols"
-                                        class="hero-model"
-                                        autoplay auto-rotate ar shadow-intensity="1" camera-controls touch-action="pan-y">
-                                    </model-viewer>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="mundo-intro revela">
+                <h2 class="seccion-titulo">Bienvenidos</h2>
+                <p class="mundo-texto">
+                    Mira &amp; Calcula es una página interactiva
+                    donde los niños pueden reforzar sus conocimientos
+                    en la resolución de problemas por medio de operaciones básicas
+                    y desarrollar la capacidad de
+                    identificar propiedades de figuras irregulares compuestas
+                    por figuras cuadradas.
+                </p>
             </div>
 
-            <br><br><br>
+            <div class="mundo-modelo revela">
+                <model-viewer
+                    src="./src/3Dmodels/Signos/signosMatematicos.glb"
+                    alt="Modelo 3D de los signos matemáticos: suma, resta, multiplicación y división"
+                    autoplay auto-rotate auto-rotate-delay="0" rotation-per-second="18deg"
+                    camera-controls disable-zoom touch-action="pan-y"
+                    interaction-prompt="none"
+                    ar
+                    environment-image="neutral" exposure="1.05"
+                    shadow-intensity="1.4" shadow-softness="0.9">
+                </model-viewer>
+                <p class="mundo-pista">
+                    <i class="bi bi-hand-index" aria-hidden="true"></i>
+                    Arrástralo para girarlo
+                </p>
+            </div>
+
+            <div class="mundo-objetivos revela">
+                <h2 class="seccion-titulo">Objetivos</h2>
+                <ul class="objetivos-list">
+                    <li>
+                        Desarrollar una página en HTML
+                        que sea accesible para los niños que presentan
+                        dificultades a la hora de aprender conceptos de matemáticas de tercer
+                        grado.
+                    </li>
+                    <li>
+                        Determinar las mejores formas de captar
+                        la atención infantil de los niños de la institución.
+                    </li>
+                    <li>
+                        Lograr comprender la actitud de los niños con el fin de crear, con precisión, minijuegos
+                        que los niños puedan entender.
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </section>
+
+    </div>
+    <!-- /Escenario -->
+
+    <section style="background-color: #004479;">
+        <div class="container text-center">
 
             <!-- Bloque 2 -->
             <div class="container my-5" id="bloque2">
@@ -179,13 +202,7 @@
                     <div class="col-lg-10">
                         <div class="block2-wrapper">
 
-                            <!-- Video / imagen arriba -->
-                            <div class="block2-media mb-4">
-                                <video controls preload="metadata">
-                                    <source src="./src/videos/videoSelby.mp4" type="video/mp4">
-                                    Tu navegador no soporta el video.
-                                </video>
-                            </div>
+                            <h2 class="block2-titulo">¿Qué quieres jugar hoy?</h2>
 
                             <!-- Botones abajo, horizontales -->
                             <div class="block2-buttons">
@@ -193,24 +210,27 @@
                                         class="btn block2-btn"
                                         onclick="window.location.href='menuOperaciones.html'">
                                     <img src="./src/img/signos.svg"
-                                        alt="Operaciones básicas"
+                                        alt=""
                                         class="block2-icon">
+                                    <span class="block2-label">Operaciones básicas</span>
                                 </button>
 
                                 <button type="button"
                                         class="btn block2-btn"
                                         onclick="window.location.href='menuFiguras.html'">
                                     <img src="./src/img/figuras.svg"
-                                        alt="Figuras irregulares"
+                                        alt=""
                                         class="block2-icon">
+                                    <span class="block2-label">Figuras irregulares</span>
                                 </button>
 
                                 <button type="button"
                                         class="btn block2-btn"
                                         onclick="window.location.href='menuLibros.html'">
                                     <img src="./src/img/libros.svg"
-                                        alt="Libros"
+                                        alt=""
                                         class="block2-icon">
+                                    <span class="block2-label">Libros</span>
                                 </button>
 
                             </div>
@@ -223,46 +243,39 @@
         </div>
     </section>
     
-    <br><br><br>
 
-    </section>
-
-    <!-- Sección inferior de presentación -->
-    <section class="school-footer" id="presentacion">
+    <!-- Pie de página -->
+    <footer class="school-footer" id="presentacion">
       <div class="container py-5">
-        <div class="row gy-4">
+        <div class="row gy-4 align-items-start">
 
-          <!-- Columna 1: nombre de la escuela y dirección -->
           <div class="col-lg-5">
-            <h2 class="school-footer-title">
-              Adelante Selby Escuela de Inmersión al Español
-            </h2>
-            <p class="school-footer-text mb-1">170 Selby Lane</p>
-            <p class="school-footer-text mb-1">Atherton, California 94027</p>
-            <p class="school-footer-text mb-0">Tel: 650.482.2415</p>
-          </div>
-
-          <!-- Columna 2: descripción del proyecto -->
-          <div class="col-md-4">
-            <h5 class="school-footer-subtitle">Sobre este proyecto</h5>
-            <p class="school-footer-text">
-              “Mira & Calcula” es una página interactiva cuyo 
-              objetivo es apoyar el aprendizaje de las matemáticas 
-              en el programa de inmersión al español de Adelante Selby.
+            <p class="school-footer-title marca-mini">Mira &amp; Calcula</p>
+            <p class="school-footer-text mb-0">
+              Una página interactiva para reforzar las matemáticas
+              de tercer grado: operaciones básicas y figuras irregulares.
             </p>
           </div>
 
-          <!-- Columna 3: links / redes -->
-          <div class="col-md-3">
-            <h5 class="school-footer-subtitle">Síganos</h5>
+          <div class="col-md-4 offset-lg-1">
+            <h2 class="school-footer-subtitle">Actividades</h2>
             <div class="d-flex flex-column gap-2">
-              <a href="https://adelanteselby.rcsdk8.net/" class="school-footer-link">Página de la escuela</a>
+              <a href="menuOperaciones.html" class="school-footer-link">Operaciones básicas</a>
+              <a href="menuFiguras.html" class="school-footer-link">Figuras irregulares</a>
+            </div>
+          </div>
+
+          <div class="col-md-3 col-lg-2">
+            <h2 class="school-footer-subtitle">Proyecto</h2>
+            <div class="d-flex flex-column gap-2">
+              <a href="autores.html" class="school-footer-link">Autores</a>
+              <a href="#inicio" class="school-footer-link">Volver arriba</a>
             </div>
           </div>
 
         </div>
       </div>
-    </section>
+    </footer>
 
     
     <!--

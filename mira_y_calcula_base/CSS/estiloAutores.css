@@ -1,12 +1,12 @@
 
 :root {
-  --selby-blue: #004479;
-  --selby-blue-dark: #001b2f;
-  --selby-yellow: #FFD500;
+  --mc-blue: #004479;
+  --mc-blue-dark: #001b2f;
+  --mc-yellow: #FFD500;
 }
 
 body {
-  background: var(--selby-blue);
+  background: var(--mc-blue);
   color: #ffffff;
 }
 
@@ -26,7 +26,7 @@ body {
 .carousel-item {
   height: 100vh;
   min-height: 520px;
-  background: var(--selby-blue-dark);
+  background: var(--mc-blue-dark);
 }
 
 .hero-bg {
@@ -75,7 +75,7 @@ body {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
   margin-bottom: 1rem;
   font-size: 3rem;
-  color: var(--selby-yellow);
+  color: var(--mc-yellow);
 }
 
 /*
@@ -136,7 +136,7 @@ footer a:hover {
 
 /* Botón volver al index */
 .back-btn {
-  background-color: var(--selby-yellow);
+  background-color: var(--mc-yellow);
   color: #002a3a;
   border: none;
 }
@@ -148,7 +148,7 @@ footer a:hover {
 
 /* Botones "Ver detalles" */
 .author-details-btn {
-  background-color: var(--selby-yellow);
+  background-color: var(--mc-yellow);
   color: #002a3a;
   border: none;
   border-radius: 12px;
@@ -163,7 +163,7 @@ footer a:hover {
 
 /* Botones dentro de los modales */
 .author-modal .btn-secondary {
-  background-color: var(--selby-yellow);
+  background-color: var(--mc-yellow);
   color: #002a3a;
   border: none;
 }
