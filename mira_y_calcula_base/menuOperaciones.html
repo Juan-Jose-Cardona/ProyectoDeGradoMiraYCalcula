@@ -3,29 +3,272 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Menu Básicas</title>
+<title>Operaciones básicas | Mira &amp; Calcula</title>
 
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 
-
 <!--Fav Icon-->
 <link rel="shortcut icon" href="../src/img/shortcutIcon.png" type="image/png" />
-<link rel="stylesheet" href="CSS/menuOperaciones.css?v=2">
+
+<!--Tipografía de la marca-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!--Iconos-->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+<!--Modelos 3D-->
+<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+<!--marca reactiva-->
+<link rel="stylesheet" href="./CSS/marca.css">
+<script src="./src/js/marca.js" defer></script>
+
+<link rel="stylesheet" href="./CSS/menuOperaciones.css?v=3">
+<script src="./src/js/menuOperaciones.js" defer></script>
 </head>
 <body>
 
-<div class="panel">
-    <button class="btn-volver" onclick="location.href='index.html'">⟵</button>
+<!-- Símbolos de las operaciones (dibujados, mismo trazo) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="ico-suma" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></symbol>
+    <symbol id="ico-resta" viewBox="0 0 24 24"><path d="M5 12h14" /></symbol>
+    <symbol id="ico-multiplicacion" viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17" /></symbol>
+    <symbol id="ico-division" viewBox="0 0 24 24"><path d="M5 12h14" /><circle cx="12" cy="6.2" r="1.4" fill="currentColor" stroke="none" /><circle cx="12" cy="17.8" r="1.4" fill="currentColor" stroke="none" /></symbol>
+</svg>
 
-    <div class="grid-menu">
-        <button onclick="location.href='juegoOperaciones.html?op=suma&v=2'">Suma</button>
-        <button onclick="location.href='juegoOperaciones.html?op=resta&v=2'">Resta</button>
-        <button onclick="location.href='juegoMultiplicacion.html?v=2'">Multiplicación</button>
-        <button onclick="location.href='juegoRepartir.html?v=2'">División</button>
+<a class="volver" href="index.html#bloque2">
+    <i class="bi bi-arrow-left" aria-hidden="true"></i> Inicio
+</a>
+
+<!-- Índice lateral: muestra en qué operación vas -->
+<nav class="indice" aria-label="Operaciones">
+    <a href="#suma" class="indice-link" style="--op: var(--suma)" aria-label="Suma"><svg><use href="#ico-suma"/></svg></a>
+    <a href="#resta" class="indice-link" style="--op: var(--resta)" aria-label="Resta"><svg><use href="#ico-resta"/></svg></a>
+    <a href="#multiplicacion" class="indice-link" style="--op: var(--multi)" aria-label="Multiplicación"><svg><use href="#ico-multiplicacion"/></svg></a>
+    <a href="#division" class="indice-link" style="--op: var(--divi)" aria-label="División"><svg><use href="#ico-division"/></svg></a>
+</nav>
+
+<header class="portada" data-parallax>
+    <div class="flotantes" aria-hidden="true">
+        <svg class="flota" style="--x: 9%;  --y: 22%; --d: 1.3; --t: 9s;  --op: var(--suma)"><use href="#ico-suma"/></svg>
+        <svg class="flota" style="--x: 86%; --y: 18%; --d: 0.9; --t: 11s; --op: var(--multi)"><use href="#ico-multiplicacion"/></svg>
+        <svg class="flota" style="--x: 14%; --y: 76%; --d: 0.8; --t: 12s; --op: var(--divi)"><use href="#ico-division"/></svg>
+        <svg class="flota" style="--x: 82%; --y: 72%; --d: 1.5; --t: 10s; --op: var(--resta)"><use href="#ico-resta"/></svg>
     </div>
-</div>
+
+    <div class="portada-contenido">
+        <h1 class="marca" data-marca style="--marca-size: clamp(2.9rem, 9vw, 5.75rem);">Operaciones básicas</h1>
+        <p class="portada-lema">Conoce cada operación, gira su modelo y después ¡a jugar!</p>
+
+        <ul class="selector">
+            <li><a href="#suma" class="selector-btn" style="--op: var(--suma); --op-base: var(--suma-base)">
+                <svg><use href="#ico-suma"/></svg><span>Suma</span></a></li>
+            <li><a href="#resta" class="selector-btn" style="--op: var(--resta); --op-base: var(--resta-base)">
+                <svg><use href="#ico-resta"/></svg><span>Resta</span></a></li>
+            <li><a href="#multiplicacion" class="selector-btn" style="--op: var(--multi); --op-base: var(--multi-base)">
+                <svg><use href="#ico-multiplicacion"/></svg><span>Multiplicación</span></a></li>
+            <li><a href="#division" class="selector-btn" style="--op: var(--divi); --op-base: var(--divi-base)">
+                <svg><use href="#ico-division"/></svg><span>División</span></a></li>
+        </ul>
+    </div>
+
+    <a class="bajar" href="#suma" aria-label="Bajar a la suma">
+        <i class="bi bi-chevron-down" aria-hidden="true"></i>
+    </a>
+</header>
+
+<main>
+
+    <!-- ===================== SUMA ===================== -->
+    <section class="op" id="suma" style="--op: var(--suma); --op-base: var(--suma-base); --op-suave: var(--suma-suave)">
+        <div class="op-texto">
+            <h2 class="op-titulo">
+                <span class="op-simbolo"><svg><use href="#ico-suma"/></svg></span>
+                Suma
+            </h2>
+            <p class="op-desc">
+                <strong>Sumar es juntar.</strong> Cuando unimos dos o más grupos de cosas
+                y contamos cuántas hay en total, estamos sumando. El resultado se llama
+                <em>suma</em> o <em>total</em>.
+            </p>
+
+            <div class="demo" data-demo>
+                <div class="demo-escena demo-escena--suma">
+                    <span class="grupo"><i></i><i></i><i></i></span>
+                    <span class="grupo"><i></i><i></i></span>
+                </div>
+                <div class="ecuacion">
+                    <span>3</span><span class="signo">+</span><span>2</span><span class="signo">=</span>
+                    <button type="button" class="respuesta" data-respuesta="5" aria-label="Ver el resultado de 3 más 2">?</button>
+                </div>
+                <p class="demo-pista">Toca el <strong>?</strong> para juntar los grupos.</p>
+            </div>
+
+            <p class="claves"><span>Pistas en un problema:</span> <b>en total</b> <b>juntos</b> <b>más</b> <b>agregar</b></p>
+
+            <a class="jugar-btn" href="juegoOperaciones.html?op=suma&v=2">
+                <i class="bi bi-play-fill" aria-hidden="true"></i> Jugar a sumar
+            </a>
+        </div>
+
+        <div class="op-modelo">
+            <model-viewer src="./src/3Dmodels/Signos/suma.glb"
+                alt="Modelo 3D del signo de suma"
+                auto-rotate auto-rotate-delay="0" rotation-per-second="22deg"
+                camera-controls disable-zoom touch-action="pan-y"
+                interaction-prompt="none" loading="lazy"
+                environment-image="neutral" exposure="1.05"
+                shadow-intensity="1.3" shadow-softness="0.9">
+            </model-viewer>
+            <p class="pista-girar"><i class="bi bi-hand-index" aria-hidden="true"></i> Arrástralo para girarlo</p>
+        </div>
+    </section>
+
+    <!-- ===================== RESTA ===================== -->
+    <section class="op op--invertida" id="resta" style="--op: var(--resta); --op-base: var(--resta-base); --op-suave: var(--resta-suave)">
+        <div class="op-texto">
+            <h2 class="op-titulo">
+                <span class="op-simbolo"><svg><use href="#ico-resta"/></svg></span>
+                Resta
+            </h2>
+            <p class="op-desc">
+                <strong>Restar es quitar.</strong> Empezamos con un grupo, le quitamos
+                algunas cosas y contamos cuántas quedan. Lo que queda se llama
+                <em>diferencia</em>.
+            </p>
+
+            <div class="demo" data-demo>
+                <div class="demo-escena demo-escena--resta">
+                    <span class="grupo"><i></i><i></i><i></i><i class="quita"></i><i class="quita"></i></span>
+                </div>
+                <div class="ecuacion">
+                    <span>5</span><span class="signo">−</span><span>2</span><span class="signo">=</span>
+                    <button type="button" class="respuesta" data-respuesta="3" aria-label="Ver el resultado de 5 menos 2">?</button>
+                </div>
+                <p class="demo-pista">Toca el <strong>?</strong> para quitar 2.</p>
+            </div>
+
+            <p class="claves"><span>Pistas en un problema:</span> <b>quedan</b> <b>quitar</b> <b>menos</b> <b>gastó</b></p>
+
+            <a class="jugar-btn" href="juegoOperaciones.html?op=resta&v=2">
+                <i class="bi bi-play-fill" aria-hidden="true"></i> Jugar a restar
+            </a>
+        </div>
+
+        <div class="op-modelo">
+            <model-viewer src="./src/3Dmodels/Signos/resta.glb"
+                alt="Modelo 3D del signo de resta"
+                auto-rotate auto-rotate-delay="0" rotation-per-second="22deg"
+                camera-controls disable-zoom touch-action="pan-y"
+                interaction-prompt="none" loading="lazy"
+                environment-image="neutral" exposure="1.05"
+                shadow-intensity="1.3" shadow-softness="0.9">
+            </model-viewer>
+            <p class="pista-girar"><i class="bi bi-hand-index" aria-hidden="true"></i> Arrástralo para girarlo</p>
+        </div>
+    </section>
+
+    <!-- ===================== MULTIPLICACIÓN ===================== -->
+    <section class="op" id="multiplicacion" style="--op: var(--multi); --op-base: var(--multi-base); --op-suave: var(--multi-suave)">
+        <div class="op-texto">
+            <h2 class="op-titulo">
+                <span class="op-simbolo"><svg><use href="#ico-multiplicacion"/></svg></span>
+                Multiplicación
+            </h2>
+            <p class="op-desc">
+                <strong>Multiplicar es sumar grupos iguales, pero más rápido.</strong>
+                3&nbsp;×&nbsp;2 significa «3 grupos de 2»: 2&nbsp;+&nbsp;2&nbsp;+&nbsp;2.
+                El resultado se llama <em>producto</em>.
+            </p>
+
+            <div class="demo" data-demo>
+                <div class="demo-escena demo-escena--multi">
+                    <span class="grupo"><i></i><i></i></span>
+                    <span class="grupo"><i></i><i></i></span>
+                    <span class="grupo"><i></i><i></i></span>
+                </div>
+                <div class="ecuacion">
+                    <span>3</span><span class="signo">×</span><span>2</span><span class="signo">=</span>
+                    <button type="button" class="respuesta" data-respuesta="6" aria-label="Ver el resultado de 3 por 2">?</button>
+                </div>
+                <p class="demo-pista">Toca el <strong>?</strong> para contar los 3 grupos.</p>
+            </div>
+
+            <p class="claves"><span>Pistas en un problema:</span> <b>cada uno</b> <b>veces</b> <b>grupos de</b> <b>el doble</b></p>
+
+            <a class="jugar-btn" href="juegoMultiplicacion.html?v=2">
+                <i class="bi bi-play-fill" aria-hidden="true"></i> Jugar a multiplicar
+            </a>
+        </div>
+
+        <div class="op-modelo">
+            <model-viewer src="./src/3Dmodels/Signos/multiplicacion.glb"
+                alt="Modelo 3D del signo de multiplicación"
+                auto-rotate auto-rotate-delay="0" rotation-per-second="22deg"
+                camera-controls disable-zoom touch-action="pan-y"
+                interaction-prompt="none" loading="lazy"
+                environment-image="neutral" exposure="1.05"
+                shadow-intensity="1.3" shadow-softness="0.9">
+            </model-viewer>
+            <p class="pista-girar"><i class="bi bi-hand-index" aria-hidden="true"></i> Arrástralo para girarlo</p>
+        </div>
+    </section>
+
+    <!-- ===================== DIVISIÓN ===================== -->
+    <section class="op op--invertida" id="division" style="--op: var(--divi); --op-base: var(--divi-base); --op-suave: var(--divi-suave)">
+        <div class="op-texto">
+            <h2 class="op-titulo">
+                <span class="op-simbolo"><svg><use href="#ico-division"/></svg></span>
+                División
+            </h2>
+            <p class="op-desc">
+                <strong>Dividir es repartir en partes iguales.</strong> Si tenemos 6 galletas
+                y las repartimos entre 2 amigos, a cada uno le tocan 3. El resultado se
+                llama <em>cociente</em>.
+            </p>
+
+            <div class="demo" data-demo>
+                <div class="demo-escena demo-escena--divi">
+                    <span class="grupo"><i></i><i></i><i></i></span>
+                    <span class="grupo"><i></i><i></i><i></i></span>
+                </div>
+                <div class="ecuacion">
+                    <span>6</span><span class="signo">÷</span><span>2</span><span class="signo">=</span>
+                    <button type="button" class="respuesta" data-respuesta="3" aria-label="Ver el resultado de 6 entre 2">?</button>
+                </div>
+                <p class="demo-pista">Toca el <strong>?</strong> para repartir entre 2.</p>
+            </div>
+
+            <p class="claves"><span>Pistas en un problema:</span> <b>repartir</b> <b>a cada uno</b> <b>partes iguales</b> <b>entre</b></p>
+
+            <a class="jugar-btn" href="juegoRepartir.html?v=2">
+                <i class="bi bi-play-fill" aria-hidden="true"></i> Jugar a repartir
+            </a>
+        </div>
+
+        <div class="op-modelo">
+            <model-viewer src="./src/3Dmodels/Signos/division.glb"
+                alt="Modelo 3D del signo de división"
+                auto-rotate auto-rotate-delay="0" rotation-per-second="22deg"
+                camera-controls disable-zoom touch-action="pan-y"
+                interaction-prompt="none" loading="lazy"
+                environment-image="neutral" exposure="1.05"
+                shadow-intensity="1.3" shadow-softness="0.9">
+            </model-viewer>
+            <p class="pista-girar"><i class="bi bi-hand-index" aria-hidden="true"></i> Arrástralo para girarlo</p>
+        </div>
+    </section>
+
+</main>
+
+<footer class="pie">
+    <p>¿Quieres probar otra cosa?</p>
+    <a href="menuFiguras.html" class="pie-link">Figuras irregulares <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+</footer>
 
 </body>
 </html>

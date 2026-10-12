@@ -111,7 +111,7 @@
   }
 }
 
-/* Gana sobre estilos de encabezado heredados (p. ej. estiloMenu.css) */
+/* Gana sobre estilos de encabezado heredados de otras hojas */
 .hero-header h1.marca{
   font-family: 'Fredoka', 'Baloo 2', system-ui, sans-serif;
   font-size: var(--marca-size);

@@ -35,6 +35,27 @@
         }
       });
     });
+
+    // Tarjetas de "¿Qué quieres jugar hoy?": se inclinan y brillan siguiendo el puntero
+    const sinMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!sinMovimiento) {
+      document.querySelectorAll('[data-tilt]').forEach((tarjeta) => {
+        tarjeta.addEventListener('pointermove', (e) => {
+          if (e.pointerType !== 'mouse') return;
+          const caja = tarjeta.getBoundingClientRect();
+          const x = (e.clientX - caja.left) / caja.width;
+          const y = (e.clientY - caja.top) / caja.height;
+          tarjeta.style.setProperty('--ry', ((x - 0.5) * 14).toFixed(2) + 'deg');
+          tarjeta.style.setProperty('--rx', ((0.5 - y) * 14).toFixed(2) + 'deg');
+          tarjeta.style.setProperty('--mx', (x * 100).toFixed(1) + '%');
+          tarjeta.style.setProperty('--my', (y * 100).toFixed(1) + '%');
+        });
+
+        tarjeta.addEventListener('pointerleave', () => {
+          ['--rx', '--ry', '--mx', '--my'].forEach((p) => tarjeta.style.removeProperty(p));
+        });
+      });
+    }
   }
 
   if (document.readyState === 'loading') {

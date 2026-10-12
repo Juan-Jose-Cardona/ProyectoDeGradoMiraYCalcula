@@ -193,53 +193,50 @@
     </div>
     <!-- /Escenario -->
 
-    <section style="background-color: #004479;">
-        <div class="container text-center">
+    <!-- Bloque 2: elegir juego -->
+    <section class="jugar" id="bloque2" data-parallax>
 
-            <!-- Bloque 2 -->
-            <div class="container my-5" id="bloque2">
-                <div class="row justify-content-center">
-                    <div class="col-lg-10">
-                        <div class="block2-wrapper">
+        <div class="hero-simbolos" aria-hidden="true">
+            <span class="simbolo" style="--x: 5%;  --y: 12%; --d: 0.9; --t: 10s;">÷</span>
+            <span class="simbolo" style="--x: 92%; --y: 20%; --d: 1.2; --t: 12s;">+</span>
+            <span class="simbolo simbolo--figura" style="--x: 88%; --y: 82%; --d: 1; --t: 11s;"></span>
+            <span class="simbolo" style="--x: 8%;  --y: 84%; --d: 0.7; --t: 9s;">×</span>
+        </div>
 
-                            <h2 class="block2-titulo">¿Qué quieres jugar hoy?</h2>
+        <div class="jugar-contenido">
 
-                            <!-- Botones abajo, horizontales -->
-                            <div class="block2-buttons">
-                                <button type="button"
-                                        class="btn block2-btn"
-                                        onclick="window.location.href='menuOperaciones.html'">
-                                    <img src="./src/img/signos.svg"
-                                        alt=""
-                                        class="block2-icon">
-                                    <span class="block2-label">Operaciones básicas</span>
-                                </button>
-
-                                <button type="button"
-                                        class="btn block2-btn"
-                                        onclick="window.location.href='menuFiguras.html'">
-                                    <img src="./src/img/figuras.svg"
-                                        alt=""
-                                        class="block2-icon">
-                                    <span class="block2-label">Figuras irregulares</span>
-                                </button>
-
-                                <button type="button"
-                                        class="btn block2-btn"
-                                        onclick="window.location.href='menuLibros.html'">
-                                    <img src="./src/img/libros.svg"
-                                        alt=""
-                                        class="block2-icon">
-                                    <span class="block2-label">Libros</span>
-                                </button>
-
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
+            <div class="jugar-encabezado revela">
+                <p class="jugar-etiqueta">
+                    <i class="bi bi-controller" aria-hidden="true"></i> Elige tu aventura
+                </p>
+                <h2 class="block2-titulo">¿Qué quieres jugar hoy?</h2>
+                <p class="jugar-sub">Toca una tarjeta para empezar.</p>
             </div>
-            
+
+            <div class="block2-buttons">
+
+                <a class="block2-btn block2-btn--operaciones revela" href="menuOperaciones.html" data-tilt>
+                    <span class="block2-numero" aria-hidden="true">1</span>
+                    <span class="block2-burbuja">
+                        <img src="./src/img/signos.svg" alt="" class="block2-icon">
+                    </span>
+                    <span class="block2-label">Operaciones básicas</span>
+                    <span class="block2-desc">Suma, resta, multiplica y reparte.</span>
+                    <span class="block2-jugar">¡Jugar! <i class="bi bi-arrow-right" aria-hidden="true"></i></span>
+                </a>
+
+                <a class="block2-btn block2-btn--figuras revela" href="menuFiguras.html" data-tilt>
+                    <span class="block2-numero" aria-hidden="true">2</span>
+                    <span class="block2-burbuja">
+                        <img src="./src/img/figuras.svg" alt="" class="block2-icon">
+                    </span>
+                    <span class="block2-label">Figuras irregulares</span>
+                    <span class="block2-desc">Arma figuras con cuadrados.</span>
+                    <span class="block2-jugar">¡Jugar! <i class="bi bi-arrow-right" aria-hidden="true"></i></span>
+                </a>
+
+            </div>
+
         </div>
     </section>
     
