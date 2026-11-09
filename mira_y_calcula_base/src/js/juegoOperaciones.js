@@ -40,7 +40,9 @@ function unlockAudio(){
 // VARIABLES PRINCIPALES
 // ============================
 const params = new URLSearchParams(window.location.search);
-const op = params.get("op"); // suma / resta
+// La suma tiene su propio juego (juegoSuma.html); este archivo queda solo para la resta.
+if (params.get("op") === "suma") window.location.replace("juegoSuma.html");
+const op = "resta";
 
 const textoPregunta = document.getElementById("textoPregunta");
 const grid = document.getElementById("grid");
@@ -86,7 +88,6 @@ modalAyuda.innerHTML = `
     <div class="modal-contenido">
         <h2>¿Cómo jugar?</h2>
         <p style="text-align:left;">
-            <b>SUMA:</b> Abre cuadros hasta completar la suma y luego presiona <b>Revisar suma</b>.<br><br>
             <b>RESTA:</b> Todos los cuadros empiezan abiertos. Cierra cuadros hasta llegar al número final y presiona <b>Revisar resta</b>.
         </p>
         <button id="cerrarAyuda" class="btn-cerrar">Aceptar</button>
@@ -101,22 +102,6 @@ document.body.appendChild(btnAyuda);
 
 btnAyuda.onclick = ()=> modalAyuda.style.display = "flex";
 document.getElementById("cerrarAyuda").onclick = ()=> modalAyuda.style.display = "none";
-
-// ============================
-// PROBLEMAS SUMA (NUEVOS ENUNCIADOS)
-// ============================
-const problemasSuma = [
-    { texto:"Laura tenía 7 manzanas y su mamá le regaló 5. ¿Cuántas tiene ahora?", total:12 },
-    { texto:"Pedro encontró 9 caramelos y luego compró 6 más. ¿Cuántos tiene en total?", total:15 },
-    { texto:"En la mesa hay 8 galletas y Ana puso 7 más. ¿Cuántas hay ahora?", total:15 },
-    { texto:"Un granjero recogió 6 huevos y luego encontró 8 más. ¿Cuántos tiene ahora?", total:14 },
-    { texto:"Había 10 jugos en la caja y agregaron 4 más. ¿Cuántos hay ahora?", total:14 },
-    { texto:"María tenía 12 lápices y su tía le dio 5 más. ¿Cuántos tiene ahora?", total:17 },
-    { texto:"En la fiesta había 11 globos y trajeron 9 más. ¿Cuántos hay en total?", total:20 },
-    { texto:"Un chef preparó 5 galletas y luego horneó 10 más. ¿Cuántas hizo en total?", total:15 },
-    { texto:"En el refrigerador hay 14 yogures y guardan 3 más. ¿Cuántos hay ahora?", total:17 },
-    { texto:"Juan encontró 6 canicas y luego encontró 7 más. ¿Cuántas tiene ahora?", total:13 }
-];
 
 // ============================
 // PROBLEMAS RESTA
@@ -145,24 +130,7 @@ function generarOperacion(){
     juegoBloqueado = false;
     btnSiguiente.style.display = "none";
 
-    if(op === "suma"){
-
-        const p = problemasSuma[Math.floor(Math.random()*problemasSuma.length)];
-        textoPregunta.textContent = p.texto;
-        resultadoFinal = p.total;
-
-        // número de cuadros siempre MAYOR a la suma
-        let min = resultadoFinal + 5;
-        let max = resultadoFinal + 20;
-        if(max > 60) max = 60;
-
-        totalCuadros = Math.floor(Math.random() * (max - min + 1)) + min;
-
-        btnRevisar.textContent = "Revisar suma";
-        btnRevisar.style.display = "block";
-    } 
-    else {
-
+    {
         const p = problemasResta[Math.floor(Math.random()*problemasResta.length)];
         textoPregunta.textContent = p.texto;
 
@@ -218,34 +186,6 @@ function toggle(celda){
         return;
     }
 
-    // SUMA
-    if(celda.classList.contains("visible")){
-        celda.classList.add("anim-cerrar");
-        setTimeout(()=>{
-            celda.textContent = "";
-            celda.classList.remove("visible","anim-cerrar");
-            celda.classList.add("oculta");
-            playSound(sndClose);
-            actualizarSuma();
-        },140);
-        return;
-    }
-
-    numeroActual++;
-    celda.textContent = numeroActual;
-    celda.classList.remove("oculta");
-    celda.classList.add("visible");
-    playSound(sndPop);
-    actualizarSuma();
-}
-
-// ============================
-// ACTUALIZAR SUMA
-// ============================
-function actualizarSuma(){
-    const visibles = [...document.querySelectorAll(".visible")];
-    visibles.forEach((c,i)=> c.textContent = i+1);
-    numeroActual = visibles.length;
 }
 
 // ============================
@@ -258,7 +198,7 @@ function actualizarResta(){
 }
 
 // ============================
-// REVISAR SUMA / RESTA
+// REVISAR RESTA
 // ============================
 btnRevisar.onclick = ()=>{
 
@@ -271,10 +211,7 @@ btnRevisar.onclick = ()=>{
         mostrarModalResultadoOperaciones(true);
     } 
     else {
-        if(op === "suma")
-            mostrarError("La suma aún no es correcta.");
-        else
-            mostrarError("La resta aún no es correcta.");
+        mostrarError("La resta aún no es correcta.");
 
         // popup de perder
         mostrarModalResultadoOperaciones(false);

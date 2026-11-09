@@ -1,0 +1,1128 @@
+/* ===========================
+   Juego de Suma · Mira y Calcula
+   Pensado para niños de 8 a 10 años con discalculia y TDAH:
+   una tarea visible a la vez, lo inactivo se atenúa, sin rojo de error
+   y sin animaciones de fondo. Todo el arte se ajusta desde las variables.
+   La lógica vive en src/js/suma/
+   =========================== */
+
+*,
+*::before,
+*::after{
+  box-sizing: border-box;
+}
+
+:root{
+  /* Marca (mismos valores que menuOperaciones.css) */
+  --azul: #004479;
+  --azul-oscuro: #001b2f;
+  --amarillo: #ffd600;
+  --texto-suave: #d6e8f7;
+  --suma: #ff6b5b;
+  --suma-base: #c23b2c;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Superficies */
+  --superficie: #0b5a94;
+  --superficie-alta: #136aa8;
+  --hundido: #00335c;
+  --linea: rgba(255, 255, 255, 0.16);
+  --linea-fuerte: rgba(255, 255, 255, 0.32);
+
+  /* Grupos de fichas: color + forma (no dependen solo del color) */
+  --grupo-a: var(--suma);
+  --grupo-a-base: var(--suma-base);
+  --grupo-b: var(--amarillo);
+  --grupo-b-base: #b89600;
+  --ficha-tinta: var(--azul-oscuro);
+
+  /* Retroalimentación (sin rojo: el error es una pista, no un castigo) */
+  --pista: #7cc8ff;
+  --acierto: #5bd16c;
+  --acierto-base: #2f8f42;
+
+  /* Medidas */
+  --ficha: clamp(38px, 6.4vw, 56px);
+  --hueco: clamp(4px, 0.9vw, 8px);
+  --radio: 22px;
+  --ancho: 980px;
+}
+
+html{
+  scrollbar-color: #2f6a99 var(--azul-oscuro);
+  -webkit-text-size-adjust: 100%;
+}
+
+body{
+  margin: 0;
+  min-height: 100svh;
+  font-family: 'Fredoka', system-ui, sans-serif;
+  font-size: 1.125rem;
+  line-height: 1.45;
+  color: #ffffff;
+  background-color: var(--azul);
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 48px 48px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection{ background: var(--amarillo); color: var(--azul-oscuro); }
+
+:focus-visible{
+  outline: 3px solid var(--amarillo);
+  outline-offset: 4px;
+}
+
+::-webkit-scrollbar{ width: 12px; }
+::-webkit-scrollbar-track{ background: var(--azul-oscuro); }
+::-webkit-scrollbar-thumb{ background: #2f6a99; border-radius: 999px; border: 3px solid var(--azul-oscuro); }
+
+[hidden]{ display: none !important; }
+
+button{ font: inherit; color: inherit; }
+
+/* ===========================
+   Botones (mismo lenguaje que "Jugar a sumar")
+   =========================== */
+
+.btn{
+  --lift: 0px;
+  --fondo: var(--suma);
+  --base: var(--suma-base);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 56px;
+  padding: 0.75rem 1.6rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--fondo);
+  color: var(--azul-oscuro);
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transform: translateY(calc(var(--lift) * -1));
+  box-shadow:
+    0 calc(6px - var(--lift) * 0.5) 0 var(--base),
+    0 calc(12px + var(--lift)) calc(20px + var(--lift)) rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out), opacity 0.2s ease;
+}
+
+.btn i{ font-size: 1.25em; line-height: 1; }
+
+.btn:hover,
+.btn:focus-visible{ --lift: 4px; }
+
+.btn:active{ --lift: -4px; transition-duration: 0.08s; }
+
+.btn--suave{
+  --fondo: var(--superficie-alta);
+  --base: var(--hundido);
+  color: #ffffff;
+}
+
+/* Brillo suave cuando el juego sugiere una pista (sin parpadeos) */
+.btn--brilla{
+  --fondo: var(--amarillo);
+  --base: var(--grupo-b-base);
+  color: var(--azul-oscuro);
+}
+
+.botonera{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px 16px;
+}
+
+/* ===========================
+   Barra superior
+   =========================== */
+
+.barra{
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: color-mix(in srgb, var(--azul-oscuro) 82%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--linea);
+}
+
+.barra-acciones{
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.barra-btn{
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  justify-self: start;
+  min-height: 46px;
+  padding: 0.45rem 1rem;
+  border: 0;
+  border-radius: 14px;
+  background: var(--azul);
+  color: #ffffff;
+  font-size: 1.05rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.barra-btn i{ font-size: 1.25rem; line-height: 1; }
+
+.barra-btn:hover{ background: #ffffff; color: var(--azul); }
+
+.barra-btn--icono{ width: 46px; padding: 0; justify-content: center; }
+
+.barra-btn--pausa{ background: var(--amarillo); color: var(--azul-oscuro); }
+.barra-btn--pausa:hover{ background: #ffffff; }
+
+.barra-centro{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.barra-titulo{
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--texto-suave);
+  text-align: center;
+}
+
+/* Progreso del nivel: 5 puntos, sin puntajes */
+.progreso{
+  display: flex;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.progreso li{
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: inset 0 0 0 2px var(--linea-fuerte);
+  transition: background-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s var(--ease-out);
+}
+
+.progreso li.is-actual{ box-shadow: inset 0 0 0 3px var(--amarillo); transform: scale(1.15); }
+.progreso li.is-hecha{ background: var(--amarillo); box-shadow: none; }
+
+/* ===========================
+   Pantallas
+   =========================== */
+
+.escenario{
+  width: min(100%, var(--ancho));
+  margin: 0 auto;
+  padding: 20px 16px 48px;
+}
+
+.pantalla{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: entrar 0.5s var(--ease-out) both;
+}
+
+@keyframes entrar{
+  from{ opacity: 0; transform: translateY(14px); }
+  to{ opacity: 1; transform: none; }
+}
+
+h1, h2{ text-wrap: balance; }
+
+/* ===========================
+   1. Introducción
+   =========================== */
+
+.pantalla--inicio{
+  align-items: center;
+  text-align: center;
+  padding-top: clamp(8px, 4vh, 40px);
+}
+
+.intro-titulo{
+  margin: 0;
+  font-size: clamp(2.2rem, 6vw, 3.6rem);
+  font-weight: 700;
+  line-height: 1.05;
+  color: #ffffff;
+}
+
+.intro-texto{
+  margin: 0;
+  max-width: 32ch;
+  min-height: 3em;
+  font-size: clamp(1.25rem, 2.6vw, 1.5rem);
+  color: var(--texto-suave);
+}
+
+.intro-escena{
+  --f: clamp(48px, 10vw, 72px);
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(40px, 12vw, 120px);
+  width: min(100%, 640px);
+  min-height: calc(var(--f) * 3.4);
+  padding: 28px 20px;
+  border-radius: var(--radio);
+  background: var(--hundido);
+  box-shadow: inset 0 3px 0 rgba(0, 0, 0, 0.25);
+  transition: gap 0.8s var(--ease-out);
+}
+
+.intro-grupo{
+  display: flex;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 18px;
+  box-shadow: inset 0 0 0 2px var(--linea-fuerte);
+  transition: box-shadow 0.5s ease, padding 0.8s var(--ease-out);
+}
+
+.intro-escena .ficha{ --ficha: var(--f); }
+
+/* Paso 2 y 3: los grupos se juntan en uno */
+.intro-escena[data-paso="1"],
+.intro-escena[data-paso="2"]{ gap: 10px; }
+
+.intro-escena[data-paso="1"] .intro-grupo,
+.intro-escena[data-paso="2"] .intro-grupo{ box-shadow: none; padding-inline: 0; }
+
+.intro-escena .ecuacion{
+  flex-basis: 100%;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.4s ease 0.3s, transform 0.5s var(--ease-out) 0.3s;
+}
+
+.intro-escena[data-paso="2"] .ecuacion{ opacity: 1; transform: none; }
+
+.intro-escena[data-paso="2"] .ficha{
+  animation: cuenta 0.45s var(--ease-out) both;
+  animation-delay: calc(var(--n) * 0.35s);
+}
+
+.intro-nav{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.intro-pasos{
+  display: flex;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.intro-pasos li{
+  width: 34px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--linea-fuerte);
+  transition: background-color 0.4s ease;
+}
+
+.intro-pasos li.is-activo{ background: var(--amarillo); }
+
+/* ===========================
+   Fichas (objetos manipulables)
+   =========================== */
+
+.ficha{
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: var(--ficha);
+  height: var(--ficha);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--grupo-a);
+  color: var(--ficha-tinta);
+  font-size: calc(var(--ficha) * 0.46);
+  font-weight: 700;
+  line-height: 1;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  box-shadow:
+    inset 0 calc(var(--ficha) * -0.08) 0 var(--grupo-a-base),
+    0 3px 6px rgba(0, 0, 0, 0.25);
+  transition: transform 0.3s var(--ease-out), opacity 0.3s ease, filter 0.3s ease;
+}
+
+/* El grupo B es cuadrado redondeado: se distingue también por la forma */
+.ficha--b{
+  border-radius: 28%;
+  background: var(--grupo-b);
+  box-shadow:
+    inset 0 calc(var(--ficha) * -0.08) 0 var(--grupo-b-base),
+    0 3px 6px rgba(0, 0, 0, 0.25);
+}
+
+.ficha-numero:empty{ display: none; }
+
+/* Con objetos reales (nivel 5): la imagen va sobre un disco claro con anillo de color */
+.ficha--objeto{
+  background: #fdf6ea;
+  box-shadow:
+    inset 0 0 0 calc(var(--ficha) * 0.07) var(--grupo-a),
+    0 3px 6px rgba(0, 0, 0, 0.25);
+}
+
+.ficha--objeto.ficha--b{
+  box-shadow:
+    inset 0 0 0 calc(var(--ficha) * 0.07) var(--grupo-b),
+    0 3px 6px rgba(0, 0, 0, 0.25);
+}
+
+.ficha--objeto img{
+  grid-area: 1 / 1;
+  width: 66%;
+  height: 66%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+/* El número va en una insignia de esquina para no tapar el objeto */
+.ficha--objeto .ficha-numero{
+  position: absolute;
+  right: -6px;
+  bottom: -6px;
+  display: grid;
+  place-items: center;
+  min-width: calc(var(--ficha) * 0.5);
+  height: calc(var(--ficha) * 0.5);
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--azul-oscuro);
+  color: #ffffff;
+  font-size: calc(var(--ficha) * 0.3);
+  box-shadow: 0 0 0 2px #ffffff;
+}
+
+.ficha--objeto .ficha-numero:empty{ display: none; }
+
+.ficha--objeto.ficha--previa{ filter: none; opacity: 0.7; }
+.ficha--objeto.ficha--marca{ opacity: 1; }
+
+@media (hover: hover){
+  .bandeja.is-activa .ficha:hover{ transform: translateY(-4px) scale(1.06); }
+}
+
+/* Mientras se arrastra: la original queda como "hueco" */
+.ficha--levantada{ opacity: 0.25; }
+
+.ficha--fantasma{
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  margin: 0;
+  pointer-events: none;
+  cursor: grabbing;
+  transition: none;
+  filter: drop-shadow(0 14px 14px rgba(0, 0, 0, 0.35));
+}
+
+.ficha--regresa{ animation: regresa 0.45s var(--ease-out); }
+
+/* Momento principal: la ficha aterriza en la caja */
+.ficha--llega{ animation: llega 0.5s var(--ease-out); }
+
+.ficha--en-caja{ cursor: pointer; }
+
+/* Ficha contada: muestra su número */
+.ficha--cuenta{ animation: cuenta 0.4s var(--ease-out); }
+.ficha--ya-contada{ animation: ya-contada 0.4s ease; }
+
+/* Grupo que ya estaba en la caja (seguir contando) */
+.ficha--previa{
+  cursor: default;
+  filter: saturate(0.55) brightness(0.92);
+}
+
+.ficha--marca{ filter: none; }
+
+.ficha--celebra{
+  animation: celebra 0.6s var(--ease-out) both;
+  animation-delay: calc(var(--n, 0) * 40ms);
+}
+
+@keyframes llega{
+  0%{ transform: translateY(-26px) scale(0.6); opacity: 0; }
+  60%{ transform: translateY(2px) scale(1.08); opacity: 1; }
+  100%{ transform: none; }
+}
+
+@keyframes cuenta{
+  0%{ transform: scale(1); }
+  40%{ transform: scale(1.18); }
+  100%{ transform: scale(1); }
+}
+
+@keyframes ya-contada{
+  0%, 100%{ transform: none; }
+  30%{ transform: translateX(-4px); }
+  65%{ transform: translateX(4px); }
+}
+
+@keyframes regresa{
+  0%{ transform: scale(1.12); }
+  100%{ transform: none; }
+}
+
+@keyframes celebra{
+  0%, 100%{ transform: none; }
+  45%{ transform: translateY(-10px) scale(1.06); }
+}
+
+/* ===========================
+   2 y 3. Pantalla de pregunta
+   =========================== */
+
+.consigna{
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 84px;
+  padding: 14px 14px 14px 22px;
+  border-radius: var(--radio);
+  background: var(--superficie);
+  box-shadow: 0 6px 0 var(--hundido);
+}
+
+.consigna-texto{
+  flex: 1;
+  margin: 0;
+  max-width: 60ch;
+  font-size: clamp(1.2rem, 2.4vw, 1.5rem);
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.btn-escuchar{
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--azul-oscuro);
+  color: var(--amarillo);
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.btn-escuchar:hover{ background: var(--amarillo); color: var(--azul-oscuro); }
+
+.historia{
+  margin: 0;
+  padding: 16px 22px;
+  border-radius: var(--radio);
+  background: #fdf6ea;
+  color: var(--azul-oscuro);
+  font-size: clamp(1.2rem, 2.4vw, 1.45rem);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.mesa{
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.bandejas{
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: stretch;
+  gap: 12px;
+}
+
+.mesa-signo{
+  display: grid;
+  place-items: center;
+  color: var(--texto-suave);
+  font-size: 1.8rem;
+  -webkit-text-stroke: 1px currentColor;
+}
+
+.bandeja{
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: calc(var(--ficha) + 36px);
+  padding: 14px 16px;
+  border-radius: var(--radio);
+  background: color-mix(in srgb, var(--azul-oscuro) 35%, transparent);
+  box-shadow: inset 0 0 0 2px var(--linea);
+  opacity: 0.5;
+  transition: opacity 0.4s ease, box-shadow 0.4s ease, background-color 0.4s ease;
+}
+
+/* Solo la bandeja con la que se trabaja está "encendida" */
+.bandeja.is-activa{
+  opacity: 1;
+  background: color-mix(in srgb, var(--azul-oscuro) 50%, transparent);
+  box-shadow: inset 0 0 0 3px var(--grupo-a), 0 8px 18px rgba(0, 0, 0, 0.25);
+}
+
+.bandeja--b.is-activa{ box-shadow: inset 0 0 0 3px var(--grupo-b), 0 8px 18px rgba(0, 0, 0, 0.25); }
+
+.bandeja.is-resaltada{ animation: resaltar 0.9s ease 2; }
+
+.bandeja-etiqueta{
+  flex: none;
+  margin: 0;
+}
+
+.bandeja-numero{
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  background: var(--grupo-a);
+  color: var(--azul-oscuro);
+  font-size: 1.9rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.bandeja--b .bandeja-numero{ background: var(--grupo-b); }
+
+.bandeja-fichas{
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--hueco);
+  min-width: 0;
+}
+
+/* Cuando el grupo ya está en la caja, la bandeja lo dice con palabras */
+.bandeja.is-vacia .bandeja-fichas::after{
+  content: 'En la caja';
+  color: var(--texto-suave);
+  font-size: 1.05rem;
+}
+
+.bandeja--ya-en-caja .bandeja-fichas::after{ content: 'Ya están en la caja'; }
+
+/* ---------- La caja (marcos de 5 / 10) ---------- */
+
+.caja{
+  display: flex;
+  justify-content: center;
+  padding: clamp(14px, 2.4vw, 22px);
+  border-radius: var(--radio);
+  background: var(--hundido);
+  box-shadow: inset 0 4px 0 rgba(0, 0, 0, 0.25), inset 0 0 0 2px var(--linea);
+  transition: box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+.caja.es-destino{
+  background: color-mix(in srgb, var(--hundido) 80%, var(--amarillo));
+  box-shadow: inset 0 4px 0 rgba(0, 0, 0, 0.25), inset 0 0 0 3px var(--amarillo);
+}
+
+.caja-marcos{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(14px, 3vw, 28px);
+}
+
+.caja-marcos.is-resaltada{ animation: resaltar 0.9s ease 2; border-radius: 16px; }
+
+.marco{
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, var(--ficha));
+  gap: var(--hueco);
+  padding: var(--hueco);
+  border-radius: 16px;
+  box-shadow: inset 0 0 0 2px var(--linea-fuerte);
+  transition: box-shadow 0.5s ease, background-color 0.5s ease;
+}
+
+.ranura{
+  display: grid;
+  place-items: center;
+  width: var(--ficha);
+  height: var(--ficha);
+  border-radius: 50%;
+  border: 2px dashed rgba(255, 255, 255, 0.22);
+}
+
+.ranura:has(.ficha){ border-color: transparent; }
+
+/* Decena completa */
+.marco--lleno{
+  background: color-mix(in srgb, var(--amarillo) 12%, transparent);
+  box-shadow: inset 0 0 0 3px var(--amarillo);
+}
+
+.marco--vale10::after{
+  content: '10';
+  position: absolute;
+  top: -16px;
+  right: -12px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--amarillo);
+  color: var(--azul-oscuro);
+  font-size: 1.4rem;
+  font-weight: 700;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  animation: llega 0.5s var(--ease-out);
+}
+
+@keyframes resaltar{
+  0%, 100%{ box-shadow: inset 0 0 0 3px transparent; }
+  50%{ box-shadow: inset 0 0 0 4px var(--amarillo); }
+}
+
+/* ---------- Ecuación: lo simbólico, conectado con los colores de los grupos ---------- */
+
+.ecuacion{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  font-size: clamp(1.8rem, 4.4vw, 2.6rem);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.ecuacion > span:not(.ec-signo){
+  display: grid;
+  place-items: center;
+  min-width: 1.7em;
+  height: 1.7em;
+  padding: 0 0.3em;
+  border-radius: 0.4em;
+  color: var(--azul-oscuro);
+}
+
+.ec-a{ background: var(--grupo-a); }
+.ec-b{ background: var(--grupo-b); }
+.ec-signo{ color: var(--texto-suave); }
+
+.ecuacion .ec-total{
+  background: transparent;
+  color: #ffffff;
+  box-shadow: inset 0 0 0 3px var(--linea-fuerte);
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+.pantalla--juego[data-paso="resuelta"] .ec-total,
+.ecuacion--intro .ec-total{
+  background: #ffffff;
+  color: var(--azul-oscuro);
+  box-shadow: none;
+}
+
+/* Mientras se colocan las fichas, la ecuación se queda en segundo plano */
+.pantalla--juego[data-paso="colocarA"] .ecuacion,
+.pantalla--juego[data-paso="colocarB"] .ecuacion{ opacity: 0.55; }
+
+/* ---------- Opciones de respuesta ---------- */
+
+.opciones{
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: clamp(14px, 3vw, 24px);
+  animation: entrar 0.45s var(--ease-out) both;
+}
+
+.opcion{
+  --lift: 0px;
+  width: clamp(84px, 16vw, 110px);
+  height: clamp(84px, 16vw, 110px);
+  border: 0;
+  border-radius: 24px;
+  background: #ffffff;
+  color: var(--azul-oscuro);
+  font-size: clamp(2.4rem, 5vw, 3.2rem);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transform: translateY(calc(var(--lift) * -1));
+  box-shadow:
+    0 calc(7px - var(--lift) * 0.5) 0 #a9c4dc,
+    0 calc(12px + var(--lift)) calc(20px + var(--lift)) rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out), opacity 0.3s ease, background-color 0.3s ease;
+}
+
+.opcion:hover:not(:disabled),
+.opcion:focus-visible{ --lift: 5px; }
+.opcion:active:not(:disabled){ --lift: -4px; transition-duration: 0.08s; }
+
+/* Una opción ya probada se aparta con calma: menos incertidumbre */
+.opcion--descartada{
+  opacity: 0.28;
+  cursor: default;
+  box-shadow: none;
+  transform: scale(0.92);
+}
+
+.opcion--correcta{
+  background: var(--acierto);
+  box-shadow: 0 7px 0 var(--acierto-base), 0 12px 20px rgba(0, 0, 0, 0.3);
+  opacity: 1;
+}
+
+.pantalla--juego[data-paso="resuelta"] .opcion:not(.opcion--correcta){ opacity: 0.2; box-shadow: none; }
+
+.opcion--sugerida{
+  background: #fff6c2;
+  box-shadow: 0 7px 0 var(--grupo-b-base), 0 0 0 5px var(--amarillo), 0 12px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* ---------- Retroalimentación formativa ---------- */
+
+.retro{
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 20px;
+  border-radius: var(--radio);
+  background: color-mix(in srgb, var(--pista) 18%, var(--azul));
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--pista) 45%, transparent);
+}
+
+.retro--acierto{
+  background: color-mix(in srgb, var(--acierto) 22%, var(--azul));
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--acierto) 55%, transparent);
+}
+
+.retro.is-entra{ animation: entrar 0.45s var(--ease-out); }
+
+.retro-icono{
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--pista);
+  color: var(--azul-oscuro);
+  font-size: 1.35rem;
+}
+
+.retro--acierto .retro-icono{ background: var(--acierto); }
+
+.retro-texto{
+  margin: 0;
+  align-self: center;
+  max-width: 62ch;
+  font-size: clamp(1.15rem, 2.2vw, 1.35rem);
+  font-weight: 500;
+}
+
+.acciones{
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.acciones .btn--principal{ margin-left: auto; }
+
+/* ---------- Mano guía del tutorial ---------- */
+
+.mano-guia{
+  position: absolute;
+  z-index: 5;
+  color: #ffffff;
+  font-size: 2.6rem;
+  line-height: 1;
+  pointer-events: none;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.45));
+  transition: left 0.5s var(--ease-out), top 0.5s var(--ease-out);
+  animation: tocar 1.3s ease-in-out infinite;
+}
+
+@keyframes tocar{
+  0%, 100%{ transform: translate(0, 6px); }
+  50%{ transform: translate(0, -6px) scale(0.92); }
+}
+
+/* ===========================
+   Inicio / fin de nivel
+   =========================== */
+
+.pantalla--nivel{
+  align-items: center;
+  text-align: center;
+  padding-top: clamp(16px, 6vh, 64px);
+}
+
+.camino{
+  position: relative;
+  display: flex;
+  gap: clamp(18px, 5vw, 44px);
+  margin: 0 0 8px;
+  padding: 0;
+  list-style: none;
+}
+
+.camino::before{
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  right: 20px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--linea-fuerte);
+  transform: translateY(-50%);
+}
+
+.camino li{
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--azul);
+  color: var(--texto-suave);
+  font-size: 1.25rem;
+  font-weight: 700;
+  box-shadow: inset 0 0 0 3px var(--linea-fuerte);
+}
+
+.camino li.is-hecho{ background: var(--amarillo); color: var(--azul-oscuro); box-shadow: none; }
+.camino li.is-actual{ background: var(--suma); color: var(--azul-oscuro); box-shadow: 0 0 0 4px var(--azul), 0 0 0 7px #ffffff; transform: scale(1.15); }
+
+.nivel-titulo{
+  margin: 0;
+  font-size: clamp(2rem, 5.4vw, 3.2rem);
+  font-weight: 700;
+  line-height: 1.08;
+}
+
+.nivel-texto,
+.nivel-nota{
+  margin: 0;
+  max-width: 44ch;
+  font-size: clamp(1.2rem, 2.4vw, 1.45rem);
+  color: var(--texto-suave);
+}
+
+.nivel-nota{
+  padding: 14px 20px;
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--pista) 18%, var(--azul));
+  color: #ffffff;
+}
+
+.pantalla--nivel .botonera{ margin-top: 12px; }
+
+/* ===========================
+   4. Pantalla final
+   =========================== */
+
+.pantalla--final{ gap: 26px; }
+
+.final-titulo{
+  margin: 0;
+  font-size: clamp(2.2rem, 6vw, 3.6rem);
+  font-weight: 700;
+  line-height: 1.05;
+  text-align: center;
+}
+
+.final-esfuerzo{
+  margin: 0 auto;
+  max-width: 52ch;
+  font-size: clamp(1.2rem, 2.4vw, 1.45rem);
+  color: var(--texto-suave);
+  text-align: center;
+}
+
+.final-columnas{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 18px;
+}
+
+.final-bloque{
+  padding: 22px 24px;
+  border-radius: var(--radio);
+  background: var(--superficie);
+  box-shadow: 0 6px 0 var(--hundido);
+}
+
+.final-bloque h2{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 12px;
+  font-size: 1.45rem;
+  font-weight: 600;
+}
+
+.final-bloque h2 i{ color: var(--amarillo); }
+.final-bloque--mejorar h2 i{ color: var(--pista); }
+
+.final-bloque ul{
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding-left: 1.2em;
+}
+
+.final-bloque li{ color: var(--texto-suave); }
+.final-bloque li b{ color: #ffffff; font-weight: 600; }
+.final-bloque li::marker{ color: var(--amarillo); }
+
+.final-adulto{
+  padding: 4px 20px;
+  border-radius: var(--radio);
+  background: color-mix(in srgb, var(--azul-oscuro) 40%, transparent);
+  box-shadow: inset 0 0 0 2px var(--linea);
+}
+
+.final-adulto summary{
+  padding: 14px 0;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tabla-resumen{
+  width: 100%;
+  margin-bottom: 16px;
+  border-collapse: collapse;
+  font-size: 1rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.tabla-resumen th,
+.tabla-resumen td{
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--linea);
+  text-align: left;
+}
+
+.tabla-resumen thead th{ color: var(--texto-suave); font-weight: 500; }
+.tabla-resumen tbody th{ font-weight: 600; }
+
+/* ===========================
+   Diálogos (reanudar / pausa)
+   =========================== */
+
+.dialogo{
+  width: min(92vw, 480px);
+  padding: 30px 26px 26px;
+  border: 0;
+  border-radius: 28px;
+  background: var(--superficie);
+  color: #ffffff;
+  text-align: center;
+  box-shadow: 0 8px 0 var(--hundido), 0 30px 60px rgba(0, 0, 0, 0.45);
+}
+
+.dialogo[open]{ animation: entrar 0.4s var(--ease-out); }
+
+.dialogo::backdrop{
+  background: color-mix(in srgb, var(--azul-oscuro) 72%, transparent);
+  backdrop-filter: blur(3px);
+}
+
+.dialogo-icono{
+  display: block;
+  font-size: 3rem;
+  line-height: 1;
+  color: var(--amarillo);
+}
+
+.dialogo h2{
+  margin: 12px 0 8px;
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.dialogo p{
+  margin: 0 0 22px;
+  font-size: 1.2rem;
+  color: var(--texto-suave);
+}
+
+/* ===========================
+   Responsivo
+   =========================== */
+
+@media (max-width: 720px){
+  .barra{ grid-template-columns: auto 1fr auto; padding: 10px 12px; gap: 8px; }
+  .barra-btn--salir span,
+  .barra-btn--pausa span{ display: none; }
+  .barra-btn--salir,
+  .barra-btn--pausa{ width: 46px; padding: 0; justify-content: center; }
+  .barra-titulo{ font-size: 0.95rem; }
+
+  .bandejas{ gap: 6px; }
+  .bandeja{ flex-direction: column; align-items: flex-start; gap: 10px; padding: 12px; }
+  .bandeja.is-vacia{ flex-direction: row; align-items: center; min-height: 0; }
+  .mesa-signo{ font-size: 1.3rem; }
+  .consigna{ padding-left: 16px; }
+}
+
+@media (max-width: 420px){
+  :root{ --ficha: 40px; --hueco: 4px; }
+  .escenario{ padding-top: 14px; }
+  .btn{ width: 100%; }
+  .acciones .btn--principal{ margin-left: 0; }
+  .bandeja-numero{ width: 46px; height: 46px; font-size: 1.6rem; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  *,
+  *::before,
+  *::after{
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .mano-guia{ animation: none; }
+}
