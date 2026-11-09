@@ -6,7 +6,7 @@
    =========================== */
 
 .marca{
-  --marca-size: clamp(3.2rem, 12vw, 6rem);
+  --marca-size: clamp(10rem, 12vw, 6rem);
   --marca-color: #ffffff;
   --marca-acento: #ffd600;
   --marca-sombra: #001b2f;
