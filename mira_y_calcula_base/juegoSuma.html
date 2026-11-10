@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Juguemos a sumar | Mira &amp; Calcula</title>
+
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+
+<link rel="shortcut icon" href="./src/img/shortcutIcon.png" type="image/png" />
+
+<!-- Tipografía de la marca -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Íconos (los mismos del menú) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+<link rel="stylesheet" href="./CSS/juegoSuma.css?v=3">
+
+<!-- Lógica modular del juego de suma -->
+<script src="./src/js/suma/config.js?v=3" defer></script>
+<script src="./src/js/suma/niveles.js?v=3" defer></script>
+<script src="./src/js/suma/almacenamiento.js?v=3" defer></script>
+<script src="./src/js/suma/arrastre.js?v=3" defer></script>
+<script src="./src/js/suma/juegoSuma.js?v=3" defer></script>
+</head>
+<body>
+
+<!-- ===================== BARRA SUPERIOR ===================== -->
+<header class="barra">
+    <a class="barra-btn barra-btn--salir" href="menuOperaciones.html#suma" data-salir>
+        <i class="bi bi-arrow-left" aria-hidden="true"></i><span>Menú</span>
+    </a>
+
+    <div class="barra-centro">
+        <p class="barra-titulo" id="barraTitulo">Suma</p>
+        <ol class="progreso" id="progreso" aria-label="Preguntas del nivel" hidden></ol>
+    </div>
+
+    <div class="barra-acciones">
+        <button type="button" class="barra-btn barra-btn--icono" id="btnSonido" aria-pressed="true" aria-label="Sonidos activados">
+            <i class="bi bi-volume-up" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="barra-btn barra-btn--pausa" id="btnPausa" hidden>
+            <i class="bi bi-pause-fill" aria-hidden="true"></i><span>Pausa</span>
+        </button>
+    </div>
+</header>
+
+<main class="escenario">
+
+    <!-- ===================== 1. INTRODUCCIÓN ===================== -->
+    <section class="pantalla pantalla--inicio" id="pantallaInicio" aria-labelledby="introTitulo" hidden>
+        <h1 class="intro-titulo" id="introTitulo">Sumar es juntar</h1>
+        <p class="intro-texto" id="introTexto" aria-live="polite"></p>
+
+        <div class="intro-escena" id="introEscena" data-paso="0" aria-hidden="true">
+            <div class="intro-grupo intro-grupo--a">
+                <span class="ficha ficha--a"></span><span class="ficha ficha--a"></span><span class="ficha ficha--a"></span>
+            </div>
+            <div class="intro-grupo intro-grupo--b">
+                <span class="ficha ficha--b"></span><span class="ficha ficha--b"></span>
+            </div>
+            <p class="ecuacion ecuacion--intro">
+                <span class="ec-a">3</span><span class="ec-signo">+</span><span class="ec-b">2</span><span class="ec-signo">=</span><span class="ec-total">5</span>
+            </p>
+        </div>
+
+        <div class="intro-nav">
+            <ol class="intro-pasos" id="introPasos" aria-hidden="true"><li></li><li></li><li></li></ol>
+            <div class="botonera">
+                <button type="button" class="btn btn--suave" id="introAtras">
+                    <i class="bi bi-arrow-left" aria-hidden="true"></i> Atrás
+                </button>
+                <button type="button" class="btn btn--principal" id="introSiguiente">
+                    Siguiente <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== 2 y 3. TUTORIAL Y PREGUNTAS ===================== -->
+    <section class="pantalla pantalla--juego" id="pantallaJuego" aria-label="Pregunta" hidden>
+
+        <div class="consigna">
+            <p class="consigna-texto" id="consignaTexto" aria-live="polite"></p>
+            <button type="button" class="btn-escuchar" id="btnEscuchar" aria-label="Escuchar la instrucción">
+                <i class="bi bi-volume-up-fill" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <p class="historia" id="historia" hidden></p>
+
+        <div class="mesa">
+            <div class="bandejas">
+                <div class="bandeja bandeja--a" id="bandejaA">
+                    <p class="bandeja-etiqueta"><span class="bandeja-numero" id="numeroA">0</span></p>
+                    <div class="bandeja-fichas" id="fichasA"></div>
+                </div>
+                <span class="mesa-signo" aria-hidden="true"><i class="bi bi-plus-lg"></i></span>
+                <div class="bandeja bandeja--b" id="bandejaB">
+                    <p class="bandeja-etiqueta"><span class="bandeja-numero" id="numeroB">0</span></p>
+                    <div class="bandeja-fichas" id="fichasB"></div>
+                </div>
+            </div>
+
+            <div class="caja" id="caja" aria-label="Caja para juntar las fichas">
+                <div class="caja-marcos" id="cajaMarcos"></div>
+            </div>
+        </div>
+
+        <p class="ecuacion" id="ecuacion" aria-live="polite">
+            <span class="ec-a" id="ecA">0</span><span class="ec-signo">+</span><span class="ec-b" id="ecB">0</span><span class="ec-signo">=</span><span class="ec-total" id="ecTotal">?</span>
+        </p>
+
+        <div class="opciones" id="opciones" role="group" aria-label="¿Cuántas hay en total?" hidden></div>
+
+        <div class="retro" id="retro" role="status" aria-live="polite" hidden>
+            <i class="retro-icono bi" id="retroIcono" aria-hidden="true"></i>
+            <p class="retro-texto" id="retroTexto"></p>
+        </div>
+
+        <div class="acciones">
+            <button type="button" class="btn btn--suave" id="btnPista">
+                <i class="bi bi-lightbulb" aria-hidden="true"></i> Pista
+            </button>
+            <button type="button" class="btn btn--principal" id="btnSiguiente" hidden>
+                Siguiente <i class="bi bi-arrow-right" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <span class="mano-guia" id="manoGuia" aria-hidden="true" hidden><i class="bi bi-hand-index-thumb-fill"></i></span>
+    </section>
+
+    <!-- ===================== INICIO / FIN DE NIVEL ===================== -->
+    <section class="pantalla pantalla--nivel" id="pantallaNivel" aria-labelledby="nivelTitulo" hidden>
+        <ol class="camino" id="camino" aria-label="Niveles"></ol>
+        <h1 class="nivel-titulo" id="nivelTitulo"></h1>
+        <p class="nivel-texto" id="nivelTexto"></p>
+        <p class="nivel-nota" id="nivelNota" hidden></p>
+        <div class="botonera">
+            <button type="button" class="btn btn--suave" id="nivelDescanso" hidden>
+                <i class="bi bi-cup-hot" aria-hidden="true"></i> Tomar un descanso
+            </button>
+            <button type="button" class="btn btn--principal" id="nivelContinuar"></button>
+        </div>
+    </section>
+
+    <!-- ===================== 4. PANTALLA FINAL ===================== -->
+    <section class="pantalla pantalla--final" id="pantallaFinal" aria-labelledby="finalTitulo" hidden>
+        <h1 class="final-titulo" id="finalTitulo">¡Terminaste las 25 sumas!</h1>
+        <p class="final-esfuerzo" id="finalEsfuerzo"></p>
+
+        <div class="final-columnas">
+            <section class="final-bloque final-bloque--logros">
+                <h2><i class="bi bi-star" aria-hidden="true"></i> Lo que hiciste muy bien</h2>
+                <ul id="finalLogros"></ul>
+            </section>
+            <section class="final-bloque final-bloque--mejorar">
+                <h2><i class="bi bi-compass" aria-hidden="true"></i> Para seguir practicando</h2>
+                <ul id="finalMejorar"></ul>
+            </section>
+        </div>
+
+        <details class="final-adulto">
+            <summary>Resumen para el adulto que acompaña</summary>
+            <table class="tabla-resumen">
+                <thead>
+                    <tr><th scope="col">Nivel</th><th scope="col">Bien a la primera</th><th scope="col">Intentos</th><th scope="col">Pistas</th><th scope="col">Tiempo</th></tr>
+                </thead>
+                <tbody id="finalTabla"></tbody>
+            </table>
+        </details>
+
+        <div class="botonera">
+            <a class="btn btn--suave" href="menuOperaciones.html#suma" data-salir>
+                <i class="bi bi-house" aria-hidden="true"></i> Volver al menú
+            </a>
+            <button type="button" class="btn btn--principal" id="btnOtraVez">
+                <i class="bi bi-arrow-repeat" aria-hidden="true"></i> Jugar otra vez
+            </button>
+        </div>
+    </section>
+
+</main>
+
+<!-- ===================== DIÁLOGOS ===================== -->
+<dialog class="dialogo" id="dialogoReanudar" aria-labelledby="reanudarTitulo">
+    <i class="dialogo-icono bi bi-bookmark-heart" aria-hidden="true"></i>
+    <h2 id="reanudarTitulo">¿Seguimos donde lo dejaste?</h2>
+    <p id="reanudarTexto"></p>
+    <div class="botonera">
+        <button type="button" class="btn btn--suave" id="btnEmpezarNuevo">Empezar de nuevo</button>
+        <button type="button" class="btn btn--principal" id="btnReanudar" autofocus>
+            <i class="bi bi-play-fill" aria-hidden="true"></i> Seguir
+        </button>
+    </div>
+</dialog>
+
+<dialog class="dialogo" id="dialogoPausa" aria-labelledby="pausaTitulo">
+    <i class="dialogo-icono bi bi-pause-circle" aria-hidden="true"></i>
+    <h2 id="pausaTitulo">Juego en pausa</h2>
+    <p>Tu progreso está guardado. Puedes cerrar el juego y seguir después, justo donde vas.</p>
+    <div class="botonera">
+        <a class="btn btn--suave" href="menuOperaciones.html#suma" data-salir>Salir al menú</a>
+        <button type="button" class="btn btn--principal" id="btnSeguir" autofocus>
+            <i class="bi bi-play-fill" aria-hidden="true"></i> Seguir jugando
+        </button>
+    </div>
+</dialog>
+
+</body>
+</html>

@@ -19,6 +19,11 @@
   <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
+  <!-- Tipografía de la marca -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <!-- CSS Autores -->
   <link rel="stylesheet" href="./CSS/estiloAutores.css">
   <link rel="stylesheet" href="./CSS/formatosNavbar.css">
@@ -64,7 +69,7 @@
             <div class="carousel-caption">
               <h1>Propósito</h1>
               <p class="lead">
-                Apoyar el aprendizaje de matemáticas en el programa de inmersión al español de Adelante Selby.
+                Apoyar el aprendizaje de las matemáticas de tercer grado de una forma interactiva.
               </p>
             </div>
           </div>
@@ -104,8 +109,8 @@
       <div class="row">
         <div class="col-lg-4">
           <div class="marketing-avatar"><i class="bi bi-person-fill"></i></div>
-          <h2 class="fw-normal">Angie Natalia Guevara</h2>
-          <p>Developer</p>
+          <h2 class="fw-normal">Victor Manuel Pedroza Holguin</h2>
+          <p>Desarrollador</p>
 
             <!-- boton para mostrar info -->
             <p>
@@ -121,8 +126,8 @@
 
         <div class="col-lg-4">
           <div class="marketing-avatar"><i class="bi bi-person-fill"></i></div>
-          <h2 class="fw-normal">Santiago Ramírez Poso</h2>
-          <p>Developer</p>
+          <h2 class="fw-normal">Juan José Cardona Serna</h2>
+          <p>Desarrollador</p>
 
             <!-- boton para mostrar info -->
             <p>
@@ -138,8 +143,8 @@
 
         <div class="col-lg-4">
           <div class="marketing-avatar"><i class="bi bi-person-fill"></i></div>
-          <h2 class="fw-normal">Juan José Cardona Serna</h2>
-          <p>Developer</p>
+          <h2 class="fw-normal">Placeholder</h2>
+          <p>Placeholder</p>
 
           <!-- boton para mostrar info -->
             <p>
@@ -160,14 +165,14 @@
       <div class="row featurette align-items-center">
         <div class="col-md-7">
           <h2 class="featurette-heading">
-            Supervisión 
+            Juan Manuel Escobar
             
           </h2>
-          <p class="lead">Mayra Alejandra Cardona</p>
+          <p class="lead">Director de Proyecto de Grado</p>
           
         </div>
         <div class="col-md-5">
-          <div class="featurette-img">photo_placeholder</div>
+          <div class="featurette-img">foto_placeholder</div>
         </div>
       </div>
 
@@ -177,42 +182,38 @@
 
   </main>
 
-  <!-- Sección inferior de presentación -->
-    <section class="school-footer" id="presentacion">
+  <!-- Pie de página -->
+    <footer class="school-footer" id="presentacion">
       <div class="container py-5">
-        <div class="row gy-4">
+        <div class="row gy-4 align-items-start">
 
-          <!-- Columna 1: nombre de la escuela y dirección -->
           <div class="col-lg-5">
-            <h2 class="school-footer-title">
-              Adelante Selby Escuela de Inmersión al Español
-            </h2>
-            <p class="school-footer-text mb-1">170 Selby Lane</p>
-            <p class="school-footer-text mb-1">Atherton, California 94027</p>
-            <p class="school-footer-text mb-0">Tel: 650.482.2415</p>
-          </div>
-
-          <!-- Columna 2: descripción del proyecto -->
-          <div class="col-md-4">
-            <h5 class="school-footer-subtitle">Sobre este proyecto</h5>
-            <p class="school-footer-text">
-              “Mira & Calcula” es una página interactiva cuyo 
-              objetivo es apoyar el aprendizaje de las matemáticas 
-              en el programa de inmersión al español de Adelante Selby.
+            <p class="school-footer-title marca-mini">Mira &amp; Calcula</p>
+            <p class="school-footer-text mb-0">
+              Una página interactiva para reforzar las matemáticas
+              de tercer grado: operaciones básicas y figuras irregulares.
             </p>
           </div>
 
-          <!-- Columna 3: links / redes -->
-          <div class="col-md-3">
-            <h5 class="school-footer-subtitle">Síganos</h5>
+          <div class="col-md-4 offset-lg-1">
+            <h2 class="school-footer-subtitle">Actividades</h2>
             <div class="d-flex flex-column gap-2">
-              <a href="https://adelanteselby.rcsdk8.net/" class="school-footer-link">Página de la escuela</a>
+              <a href="menuOperaciones.html" class="school-footer-link">Operaciones básicas</a>
+              <a href="menuFiguras.html" class="school-footer-link">Figuras irregulares</a>
+            </div>
+          </div>
+
+          <div class="col-md-3 col-lg-2">
+            <h2 class="school-footer-subtitle">Proyecto</h2>
+            <div class="d-flex flex-column gap-2">
+              <a href="index.html" class="school-footer-link">Inicio</a>
+              <a href="#equipo" class="school-footer-link">Equipo</a>
             </div>
           </div>
 
         </div>
       </div>
-    </section>
+    </footer>
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -225,12 +226,12 @@
             <div class="modal-content author-modal">
                 
                 <div class="modal-header">
-                    <h5 class="modal-title">Angie Natalia Guevara</h5>
+                    <h5 class="modal-title">Victor Manuel Pedroza Holguin</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 
                 <div class="modal-body">
-                    <p class="mb-2"><strong>Rol:</strong> Developer</p>
+                    <p class="mb-2"><strong>Rol:</strong> Desarrollador</p>
                     <p class="mb-0">Description Placeholder.</p>
                 </div>
             
@@ -246,12 +247,12 @@
             <div class="modal-content author-modal">
 
                 <div class="modal-header">
-                    <h5 class="modal-title">Santiago Ramírez Poso</h5>
+                    <h5 class="modal-title">Juan Jose Cardona Serna</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
 
                 <div class="modal-body">
-                    <p class="mb-2"><strong>Rol:</strong> Developer</p>
+                    <p class="mb-2"><strong>Rol:</strong> Desarrollador</p>
                     <p class="mb-0">Description Placeholder.</p>
                 </div>
             
@@ -267,12 +268,12 @@
             <div class="modal-content author-modal">
 
                 <div class="modal-header">
-                    <h5 class="modal-title">Juan José Cardona Serna</h5>
+                    <h5 class="modal-title">Placeholder</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 
                 <div class="modal-body">
-                    <p class="mb-2"><strong>Rol:</strong> Developer</p>
+                    <p class="mb-2"><strong>Rol:</strong> Placeholder</p>
                     <p class="mb-0">Description Placeholder.</p>
                 </div>
             
