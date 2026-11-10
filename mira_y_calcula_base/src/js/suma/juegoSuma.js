@@ -15,6 +15,7 @@
 (function () {
   const C = Suma.CONFIG;
   const N = Suma.Niveles;
+  const RESTA = C.operacion === 'resta'; // resta: las fichas empiezan en la caja y se tachan
   const G = Suma.Almacenamiento;
   const $ = (id) => document.getElementById(id);
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -74,7 +75,7 @@
 
   function actualNuevo() {
     return { colocadasA: 0, colocadasB: 0, contadas: [], intentos: 0, pistas: 0,
-             tiempoMs: 0, descartadas: [], resuelta: false, guiada: false };
+             tiempoMs: 0, descartadas: [], resuelta: false, guiada: false, quitadas: [] };
   }
 
   function statsNivel(n) {
@@ -149,15 +150,11 @@
   // =====================================================================
   // 1. INTRODUCCIÓN
   // =====================================================================
-  const INTRO = [
-    { titulo: 'Sumar es juntar', texto: 'Aquí hay dos grupos: 3 fichas rojas y 2 fichas amarillas.' },
-    { titulo: 'Juntamos los grupos', texto: 'Ponemos todas las fichas en el mismo lugar. Ya no son dos grupos: es uno solo.' },
-    { titulo: 'Contamos todo', texto: '1, 2, 3, 4, 5. ¡Hay 5! Por eso decimos: 3 más 2 es igual a 5.' }
-  ];
+  const INTRO = C.textos.intro;
 
   function pintarIntro() {
     mostrar('inicio');
-    el.barraTitulo.textContent = 'Suma';
+    el.barraTitulo.textContent = C.textos.nombre;
     const paso = estado.introPaso;
     const d = INTRO[paso];
     el.introTitulo.textContent = d.titulo;
@@ -169,8 +166,9 @@
       ? 'Siguiente <i class="bi bi-arrow-right" aria-hidden="true"></i>'
       : 'Practicar conmigo <i class="bi bi-arrow-right" aria-hidden="true"></i>';
     // los números del paso 3 aparecen sobre las fichas
+    let k = 0; // las fichas tachadas (resta) no se cuentan
     el.introEscena.querySelectorAll('.ficha').forEach((f, i) => {
-      f.textContent = paso === 2 ? i + 1 : '';
+      f.textContent = paso === 2 && !f.classList.contains('intro-quita') ? ++k : '';
       f.style.setProperty('--n', i);
     });
   }
@@ -206,7 +204,7 @@
   }
 
   function reglas() {
-    if (esTutorial()) return { modo: 'juntar', ranuras: 5, conteoObligatorio: true };
+    if (esTutorial()) return { modo: RESTA ? 'quitar' : 'juntar', ranuras: 5, conteoObligatorio: true };
     const n = N.nivel(estado.nivel);
     return Object.assign({}, n, { conteoObligatorio: estado.nivel <= C.conteoObligatorioHastaNivel });
   }
@@ -218,8 +216,12 @@
   function pasoActual() {
     const p = preguntaActual(), r = reglas(), a = estado.actual;
     if (a.resuelta) return 'resuelta';
-    if (r.modo === 'juntar' && a.colocadasA < p.a) return 'colocarA';
-    if (a.colocadasB < p.b) return 'colocarB';
+    if (RESTA) {
+      if (a.quitadas.length < p.b) return 'quitar';
+    } else {
+      if (r.modo === 'juntar' && a.colocadasA < p.a) return 'colocarA';
+      if (a.colocadasB < p.b) return 'colocarB';
+    }
     if (r.conteoObligatorio && a.contadas.length < contables(p, r)) return 'contar';
     return 'responder';
   }
@@ -233,8 +235,14 @@
     const nuevas = obj
       ? `${fem ? 'las' : 'los'} ${p.b} ${obj.plural} ${fem ? 'nuevas' : 'nuevos'} (borde amarillo)`
       : `las ${p.b} fichas amarillas`;
-    const cuantas = obj ? `¿${fem ? 'Cuántas' : 'Cuántos'} ${obj.plural} hay en total?` : '¿Cuántas fichas hay en total?';
+    const cuantas = RESTA
+      ? (obj ? `¿${fem ? 'Cuántas' : 'Cuántos'} ${obj.plural} quedan?` : '¿Cuántas fichas quedan?')
+      : (obj ? `¿${fem ? 'Cuántas' : 'Cuántos'} ${obj.plural} hay en total?` : '¿Cuántas fichas hay en total?');
     switch (paso) {
+      case 'quitar':
+        return p.b === 1
+          ? `Había ${p.a}. Se va 1: toca una ficha para tacharla.`
+          : `Había ${p.a}. Se van ${p.b}: toca ${p.b} fichas para tacharlas.`;
       case 'colocarA':
         return `Lleva las ${p.a} fichas rojas a la caja. Puedes arrastrarlas o tocarlas.`;
       case 'colocarB':
@@ -242,6 +250,7 @@
           ? `En la caja ya hay ${p.a}. Ahora lleva ${nuevas}.`
           : `¡Bien! Ahora lleva las ${p.b} fichas amarillas a la caja.`;
       case 'contar':
+        if (RESTA) return 'Toca cada ficha que quedó sin tachar para contarla. Di el número en voz alta.';
         return r.modo === 'contarDesde'
           ? `Empieza en ${p.a}. Toca cada ficha amarilla para seguir contando.`
           : 'Toca cada ficha de la caja para contarlas. Di el número en voz alta.';
@@ -296,7 +305,7 @@
       el.fichasB.innerHTML = '';
       const restantesA = r.modo === 'juntar' ? p.a - a.colocadasA : 0;
       for (let i = 0; i < restantesA; i++) el.fichasA.appendChild(prepararMovible(crearFicha('a', p)));
-      for (let i = 0; i < p.b - a.colocadasB; i++) el.fichasB.appendChild(prepararMovible(crearFicha('b', p)));
+      for (let i = 0; i < (RESTA ? 0 : p.b - a.colocadasB); i++) el.fichasB.appendChild(prepararMovible(crearFicha('b', p)));
       el.bandejaA.classList.toggle('bandeja--ya-en-caja', r.modo === 'contarDesde');
 
       // Caja: marcos de 5 o de 10 ranuras
@@ -316,10 +325,11 @@
       }
 
       // Fichas que ya están en la caja
-      const enCajaA = r.modo === 'contarDesde' ? p.a : a.colocadasA;
+      const enCajaA = (r.modo === 'contarDesde' || RESTA) ? p.a : a.colocadasA;
       for (let i = 0; i < enCajaA; i++) ponerEnRanura(crearFicha('a', p), i, r.modo === 'contarDesde');
       for (let i = 0; i < a.colocadasB; i++) ponerEnRanura(crearFicha('b', p), p.a + i, false);
       if (r.modo === 'contarDesde') marcarPrevias(p);
+      if (RESTA) a.quitadas.forEach((slot) => el.marcos.querySelector(`.ficha[data-slot="${slot}"]`).classList.add('ficha--quitada'));
       if (r.decenas && enCajaA + a.colocadasB >= 10) el.marcos.firstElementChild.classList.add('marco--lleno');
       pintarConteo();
 
@@ -421,9 +431,22 @@
   }
 
   // ---------- Paso 3: contar tocando ----------
+  // Resta: tocar una ficha la tacha (se va)
+  function quitar(ficha) {
+    const slot = Number(ficha.dataset.slot);
+    if (estado.actual.quitadas.includes(slot)) return;
+    estado.actual.quitadas.push(slot);
+    ficha.classList.add('ficha--quitada');
+    sonar('pop');
+    guardar();
+    actualizarPaso();
+  }
+
   function contar(ficha) {
     if (bloqueado || pausado) return;
     const paso = pasoActual();
+    if (paso === 'quitar') return quitar(ficha);
+    if (ficha.classList.contains('ficha--quitada')) return;
     if (paso === 'colocarA' || paso === 'colocarB' || paso === 'resuelta') return;
     const slot = Number(ficha.dataset.slot);
     const a = estado.actual;
@@ -464,10 +487,10 @@
     if (paso !== 'resuelta') el.consigna.textContent = textoConsigna(paso);
 
     el.bandejaA.classList.toggle('is-activa', paso === 'colocarA');
-    el.bandejaB.classList.toggle('is-activa', paso === 'colocarB');
+    el.bandejaB.classList.toggle('is-activa', paso === 'colocarB' || paso === 'quitar');
     el.bandejaA.classList.toggle('is-vacia', !el.fichasA.querySelector('.ficha'));
     el.bandejaB.classList.toggle('is-vacia', !el.fichasB.querySelector('.ficha'));
-    el.caja.classList.toggle('is-activa', paso === 'colocarA' || paso === 'colocarB' || paso === 'contar');
+    el.caja.classList.toggle('is-activa', paso === 'colocarA' || paso === 'colocarB' || paso === 'contar' || paso === 'quitar');
 
     const verOpciones = paso === 'responder' || paso === 'resuelta';
     el.opciones.hidden = !verOpciones;
@@ -490,7 +513,8 @@
     let objetivo = null;
     if (paso === 'colocarA') objetivo = el.fichasA.querySelector('.ficha');
     else if (paso === 'colocarB') objetivo = el.fichasB.querySelector('.ficha');
-    else if (paso === 'contar') objetivo = el.marcos.querySelector('.ficha:not(.ficha--contada):not(.ficha--previa)');
+    else if (paso === 'quitar') objetivo = [...el.marcos.querySelectorAll('.ficha:not(.ficha--quitada)')].pop();
+    else if (paso === 'contar') objetivo = el.marcos.querySelector('.ficha:not(.ficha--contada):not(.ficha--previa):not(.ficha--quitada)');
     else if (paso === 'responder') objetivo = el.opciones.querySelector(`.opcion[data-valor="${preguntaActual().total}"]`);
     if (!objetivo) { el.mano.hidden = true; return; }
 
@@ -514,7 +538,7 @@
       a.resuelta = true;
       el.ecTotal.textContent = p.total;
       const texto = esTutorial()
-        ? `¡Lo hiciste! Juntaste ${p.a} y ${p.b}, contaste todo y encontraste el total: ${p.total}. Ya sabes sumar.`
+        ? C.textos.tutorialFin(p)
         : N.mensajeAcierto(p, estado.nivel, a.intentos);
       mostrarRetro('acierto', texto);
       sonar('acierto');
@@ -577,6 +601,7 @@
   // ---------- Pistas visuales ----------
   function tipoPistaPorDefecto() {
     const p = preguntaActual(), r = reglas();
+    if (RESTA) return 'contar';
     if (r.decenas && p.total > 10) return 'decena';
     if (r.modo === 'contarDesde') return 'contarDesde';
     return 'contar';
@@ -588,7 +613,10 @@
     estado.actual.pistas++;
     el.btnPista.classList.remove('btn--brilla');
 
-    if (paso === 'colocarA' || paso === 'colocarB') {
+    if (paso === 'quitar') {
+      mostrarRetro('pista', `Toca una ficha de la caja y se tachará. Tacha ${preguntaActual().b} en total; ya llevas ${estado.actual.quitadas.length}.`);
+      resaltar(el.marcos);
+    } else if (paso === 'colocarA' || paso === 'colocarB') {
       const bandeja = paso === 'colocarA' ? el.bandejaA : el.bandejaB;
       mostrarRetro('pista', paso === 'colocarA'
         ? 'Toca una ficha roja: se irá sola a la caja. Repite hasta que no quede ninguna.'
@@ -624,6 +652,8 @@
     } else if (tipo === 'contarDesde') {
       resaltar(el.marcos);
       for (let i = p.a; i < p.total; i++) orden.push(i);
+    } else if (RESTA) {
+      for (let i = 0; i < p.a; i++) if (!a.quitadas.includes(i)) orden.push(i);
     } else {
       const desde = reglas().modo === 'contarDesde' ? p.a : 0;
       for (let i = desde; i < p.total; i++) orden.push(i);
@@ -766,7 +796,7 @@
   }
 
   function mensajeFinNivel(st) {
-    const partes = [`Resolviste las ${C.preguntasPorNivel} sumas.`];
+    const partes = [`Resolviste las ${C.preguntasPorNivel} ${C.textos.plural}.`];
     if (st.primerIntento === C.preguntasPorNivel) partes.push('Todas te salieron a la primera: contaste con mucho cuidado.');
     else if (st.intentos > C.preguntasPorNivel) partes.push('Cuando una no salía, volviste a intentarlo. Así es como se aprende.');
     if (st.pistas > 0) partes.push(`Usaste ${st.pistas} ${st.pistas === 1 ? 'pista' : 'pistas'}: pedir ayuda también es parte de aprender.`);
@@ -801,32 +831,25 @@
   function pintarFinal() {
     mostrar('final');
     detenerReloj();
-    el.barraTitulo.textContent = 'Suma';
+    el.barraTitulo.textContent = C.textos.nombre;
     const total = C.niveles.length * C.preguntasPorNivel;
     const niveles = C.niveles.map((n) => ({ n, st: statsNivel(n.numero) }));
     const intentos = niveles.reduce((s, x) => s + x.st.intentos, 0);
     const pistas = niveles.reduce((s, x) => s + x.st.pistas, 0);
     const reintentos = intentos - total;
 
-    let esfuerzo = `Trabajaste ${minutos(estado.tiempoTotalMs)} y resolviste ${total} sumas juntando y contando objetos.`;
+    let esfuerzo = `Trabajaste ${minutos(estado.tiempoTotalMs)} y resolviste ${total} ${C.textos.plural} ${C.textos.accion}.`;
     if (reintentos > 0) esfuerzo += ` En ${reintentos} ${reintentos === 1 ? 'ocasión' : 'ocasiones'} algo no salió a la primera y seguiste intentando: ese esfuerzo es lo que te hace aprender.`;
     if (pistas > 0) esfuerzo += ` Usaste las pistas ${pistas} ${pistas === 1 ? 'vez' : 'veces'} cuando las necesitaste. ¡Muy bien hecho!`;
     el.finalEsfuerzo.textContent = esfuerzo;
 
     // Logros: niveles con 4 o más aciertos a la primera
-    const DESCRIPCION = {
-      1: 'Juntar grupos pequeños y contarlos.',
-      2: 'Contar con cuidado hasta 10.',
-      3: 'Seguir contando desde un número, sin volver a empezar.',
-      4: 'Llenar una decena y sumar lo que queda.',
-      5: 'Entender una historia y convertirla en suma.'
-    };
     el.finalLogros.innerHTML = '';
     const buenos = niveles.filter((x) => x.st.primerIntento >= C.preguntasPorNivel - 1);
     (buenos.length ? buenos : niveles.slice().sort((x, y) => y.st.primerIntento - x.st.primerIntento).slice(0, 1))
       .forEach((x) => {
         const li = document.createElement('li');
-        li.innerHTML = `<b>Nivel ${x.n.numero} · ${x.n.titulo}.</b> ${DESCRIPCION[x.n.numero]}`;
+        li.innerHTML = `<b>Nivel ${x.n.numero} · ${x.n.titulo}.</b> ${x.n.logro}`;
         el.finalLogros.appendChild(li);
       });
 
@@ -837,7 +860,7 @@
     el.finalMejorar.innerHTML = '';
     if (!top.length) {
       const li = document.createElement('li');
-      li.innerHTML = '<b>¡Vas muy bien!</b> Para seguir creciendo, intenta sumar objetos de tu casa: cucharas, juguetes o frutas.';
+      li.innerHTML = '<b>¡Vas muy bien!</b> Para seguir creciendo, ' + C.textos.practicaCasa;
       el.finalMejorar.appendChild(li);
     } else {
       top.forEach(([t]) => {

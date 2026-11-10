@@ -11,6 +11,7 @@ window.Suma = window.Suma || {};
 
 Suma.Niveles = (function () {
   const C = Suma.CONFIG;
+  const RESTA = C.operacion === 'resta';
   const NOMBRES = ['Laura', 'Pedro', 'Ana', 'Juan', 'Sofía', 'Mateo', 'Valentina', 'Samuel'];
 
   const azar = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
@@ -34,7 +35,11 @@ Suma.Niveles = (function () {
     const obj = elegir(C.objetos);
     const nombre = elegir(NOMBRES);
     const cuantos = obj.genero === 'f' ? 'Cuántas' : 'Cuántos';
-    const plantillas = [
+    const plantillas = RESTA ? [
+      `${nombre} tenía ${a} ${obj.plural}. Regaló ${b}. ¿${cuantos} ${obj.plural} le quedan?`,
+      `En la mesa había ${a} ${obj.plural}. ${nombre} se llevó ${b}. ¿${cuantos} ${obj.plural} quedan?`,
+      `${nombre} guardó ${a} ${obj.plural} en la caja. Luego sacó ${b}. ¿${cuantos} ${obj.plural} quedan en la caja?`
+    ] : [
       `${nombre} tiene ${a} ${obj.plural}. Le regalan ${b} más. ¿${cuantos} ${obj.plural} tiene ahora?`,
       `En la mesa hay ${a} ${obj.plural}. ${nombre} pone ${b} más. ¿${cuantos} ${obj.plural} hay en total?`,
       `${nombre} guardó ${a} ${obj.plural} en la caja. Luego encontró ${b} más. ¿${cuantos} ${obj.plural} hay ahora?`
@@ -52,12 +57,12 @@ Suma.Niveles = (function () {
       intentos++;
       const a = azar(n.rangoA[0], n.rangoA[1]);
       const b = azar(n.rangoB[0], n.rangoB[1]);
-      const total = a + b;
+      const total = RESTA ? a - b : a + b;
       const clave = a + '+' + b;
       const anterior = preguntas[preguntas.length - 1];
 
       if (total < n.rangoTotal[0] || total > n.rangoTotal[1]) continue;
-      if (total > n.ranuras) continue;
+      if ((RESTA ? a : total) > n.ranuras) continue;
       if (usadas.has(clave) && intentos < 400) continue;
       if (anterior && anterior.total === total && intentos < 300) continue;
 
@@ -72,7 +77,7 @@ Suma.Niveles = (function () {
 
   function preguntaTutorial() {
     const { a, b } = C.tutorial;
-    const p = { a, b, total: a + b, tutorial: true };
+    const p = { a, b, total: RESTA ? a - b : a + b, tutorial: true };
     p.opciones = [p.total - 1, p.total, p.total + 1];
     return p;
   }
@@ -81,7 +86,7 @@ Suma.Niveles = (function () {
 
   function crearOpciones(p, n) {
     const plausibles = [p.total - 1, p.total + 1];
-    if (n.modo === 'contarDesde') plausibles.push(p.b);
+    if (n.modo === 'contarDesde' || RESTA) plausibles.push(p.b);
     if (n.decenas) plausibles.push(p.total - 10);
     plausibles.push(p.total - 2, p.total + 2);
 
@@ -99,6 +104,8 @@ Suma.Niveles = (function () {
 
   function clasificarError(p, numeroNivel, respuesta) {
     const n = p.tutorial ? { modo: 'juntar' } : nivel(numeroNivel);
+    if (RESTA && respuesta === p.b) return 'contoQuitadas';
+    if (RESTA && respuesta === p.a) return 'noQuito';
     if (n.modo === 'contarDesde' && respuesta === p.b) return 'soloNuevas';
     if (n.modo === 'contarDesde' && respuesta === p.total - 1) return 'empezoDesdeA';
     if (n.decenas && respuesta === p.total - 10) return 'olvidoDecena';
@@ -108,6 +115,16 @@ Suma.Niveles = (function () {
   // Devuelve { texto, pista } — la pista indica qué ayuda visual mostrar
   function mensajeError(tipo, p, respuesta) {
     switch (tipo) {
+      case 'contoQuitadas':
+        return {
+          texto: `Contaste las ${p.b} fichas tachadas. Esas ya se fueron. Ahora cuenta solo las que quedan, las que no tienen raya.`,
+          pista: 'contar'
+        };
+      case 'noQuito':
+        return {
+          texto: `${p.a} eran todas las fichas del principio. Pero se fueron ${p.b}. Cuenta solo las que quedan sin tachar.`,
+          pista: 'contar'
+        };
       case 'soloNuevas':
         return {
           texto: `Contaste las ${p.b} fichas nuevas, ¡bien! Pero en la caja también estaban las ${p.a} que ya había. Empieza en ${p.a} y sigue contando.`,
@@ -125,12 +142,16 @@ Suma.Niveles = (function () {
         };
       case 'faltaron':
         return {
-          texto: `Elegiste ${respuesta}, pero en la caja hay más fichas. Quizás alguna se quedó sin contar. Vamos a contarlas juntos, una por una.`,
+          texto: RESTA
+            ? `Elegiste ${respuesta}, pero quedan más fichas sin tachar. Vamos a contarlas juntos, una por una.`
+            : `Elegiste ${respuesta}, pero en la caja hay más fichas. Quizás alguna se quedó sin contar. Vamos a contarlas juntos, una por una.`,
           pista: 'contar'
         };
       default:
         return {
-          texto: `Elegiste ${respuesta}, y en la caja hay menos fichas. Quizás contaste alguna dos veces. Mira cómo contamos cada ficha una sola vez.`,
+          texto: RESTA
+            ? `Elegiste ${respuesta}, y quedan menos fichas. Quizás contaste alguna tachada o la contaste dos veces. Mira cómo contamos solo las que quedan.`
+            : `Elegiste ${respuesta}, y en la caja hay menos fichas. Quizás contaste alguna dos veces. Mira cómo contamos cada ficha una sola vez.`,
           pista: 'contar'
         };
     }
@@ -142,7 +163,16 @@ Suma.Niveles = (function () {
     let texto;
     const n = p.tutorial ? { modo: 'juntar' } : nivel(numeroNivel);
 
-    if (n.conContexto) {
+    if (RESTA) {
+      const obj = n.conContexto ? C.objetos.find((o) => o.id === p.objeto) : null;
+      texto = obj
+        ? `¡Exacto! Tenías ${p.a}, se fueron ${p.b}: quedan ${p.total} ${obj.plural}.`
+        : elegir([
+          `¡Exacto! Tenías ${p.a}, tachaste ${p.b} y quedan ${p.total}.`,
+          `¡Exacto, contaste muy bien las que quedan! ${p.a} menos ${p.b} es ${p.total}.`,
+          `¡Muy bien! No contaste las tachadas: quedan ${p.total}.`
+        ]);
+    } else if (n.conContexto) {
       const obj = C.objetos.find((o) => o.id === p.objeto);
       texto = `¡Exacto! Juntaste ${p.a} y ${p.b}: ${p.nombre} tiene ${p.total} ${obj.plural}.`;
     } else if (n.decenas && p.total > 10) {
@@ -164,6 +194,14 @@ Suma.Niveles = (function () {
   // ---------- Recomendaciones finales ----------
 
   const AREAS = {
+    contoQuitadas: {
+      titulo: 'Contar solo lo que queda',
+      consejo: 'Cuando algo se va, sepáralo o táchalo. Después cuenta solo lo que sigue ahí.'
+    },
+    noQuito: {
+      titulo: 'Recordar quitar',
+      consejo: 'Restar es quitar: primero saca los objetos que se van y después cuenta los que quedan.'
+    },
     faltaron: {
       titulo: 'Contar sin saltarse objetos',
       consejo: 'Toca o señala cada objeto mientras dices el número en voz alta. Así ninguno se queda sin contar.'
