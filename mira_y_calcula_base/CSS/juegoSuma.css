@@ -475,6 +475,27 @@ h1, h2{ text-wrap: balance; }
 
 .ficha--marca{ filter: none; }
 
+/* Resta: ficha que se va (tachada). También en el paso 2 y 3 de la intro de resta */
+.ficha--quitada,
+.intro-escena:not([data-paso="0"]) .intro-quita{
+  cursor: default;
+  opacity: 0.4;
+  filter: grayscale(0.6);
+  animation: none;
+}
+
+.ficha--quitada::after,
+.intro-escena:not([data-paso="0"]) .intro-quita::after{
+  content: '';
+  position: absolute;
+  inset: 44% -8%;
+  border-radius: 999px;
+  background: #ffffff;
+  transform: rotate(-35deg);
+}
+
+.bandeja--quitar .bandeja-fichas::after{ content: 'Se tachan en la caja' !important; }
+
 .ficha--celebra{
   animation: celebra 0.6s var(--ease-out) both;
   animation-delay: calc(var(--n, 0) * 40ms);
@@ -884,6 +905,189 @@ h1, h2{ text-wrap: balance; }
 @keyframes tocar{
   0%, 100%{ transform: translate(0, 6px); }
   50%{ transform: translate(0, -6px) scale(0.92); }
+}
+
+/* ===========================
+   Multiplicación: filas, cajas y recta numérica
+   =========================== */
+
+.lectura{
+  margin: 0;
+  text-align: center;
+  font-size: clamp(1.2rem, 2.6vw, 1.5rem);
+  font-weight: 500;
+  color: var(--texto-suave);
+}
+
+.bandejas:has(> .bandeja--a[hidden]){ grid-template-columns: 1fr; }
+
+.grupo-multi{
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--hueco);
+  padding: var(--hueco);
+  border: 0;
+  border-radius: 16px;
+  background: transparent;
+  box-shadow: inset 0 0 0 2px var(--linea-fuerte);
+  transition: box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+/* Nivel 1: una fila debajo de otra */
+.caja-marcos:has(.grupo-multi--filas){ flex-direction: column; align-items: center; gap: 10px; }
+.grupo-multi--filas{ flex-wrap: nowrap; }
+.grupo-multi--filas.is-vacio{ cursor: pointer; }
+.grupo-multi--filas.is-vacio:hover,
+.grupo-multi--filas.is-vacio:focus-visible{
+  background: color-mix(in srgb, var(--amarillo) 10%, transparent);
+  box-shadow: inset 0 0 0 3px var(--amarillo);
+}
+
+/* Nivel 2: cajas de hasta 3 fichas por renglón */
+.grupo-multi--cajas{
+  width: calc(var(--ficha) * 3 + var(--hueco) * 4);
+  align-content: flex-start;
+  cursor: pointer;
+}
+.grupo-multi--cajas.is-vacio{ opacity: 0.6; }
+.grupo-multi--cajas.is-contado{
+  background: color-mix(in srgb, var(--amarillo) 12%, transparent);
+  box-shadow: inset 0 0 0 3px var(--amarillo);
+}
+.grupo-multi.is-resaltada{ animation: resaltar 0.9s ease 1; }
+
+.grupo-cuenta{
+  position: absolute;
+  top: -16px;
+  right: -12px;
+  display: grid;
+  place-items: center;
+  min-width: 44px;
+  height: 44px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--amarillo);
+  color: var(--azul-oscuro);
+  font-size: 1.35rem;
+  font-weight: 700;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+.grupo-cuenta:empty{ display: none; }
+
+.ficha--fija{ pointer-events: none; }
+
+/* Nivel 3: recta numérica */
+.caja-marcos:has(.recta){ flex-direction: column; align-items: center; width: 100%; gap: 18px; }
+
+.recta{
+  position: relative;
+  width: calc(100% - 24px);
+  height: 132px;
+}
+
+.recta::before{
+  content: '';
+  position: absolute;
+  left: -12px;
+  right: -12px;
+  bottom: 40px;
+  height: 4px;
+  border-radius: 999px;
+  background: #ffffff;
+}
+
+.recta-marca{
+  position: absolute;
+  bottom: 36px;
+  width: 2px;
+  height: 12px;
+  background: var(--linea-fuerte);
+  transform: translateX(-50%);
+}
+
+.recta-marca--salto{ bottom: 32px; height: 20px; width: 3px; background: #ffffff; }
+.recta-marca.is-llegada{ background: var(--amarillo); }
+
+.recta-marca[data-n]::after{
+  content: attr(data-n);
+  position: absolute;
+  top: 26px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: clamp(0.95rem, 2vw, 1.2rem);
+  font-weight: 700;
+  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+}
+
+.recta-marca.is-llegada::after{ color: var(--amarillo); }
+
+.recta-arco{
+  position: absolute;
+  bottom: 44px;
+  height: 52px;
+  border: 4px solid var(--suma);
+  border-bottom: 0;
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+}
+
+.recta-arco::after{
+  content: attr(data-n);
+  position: absolute;
+  top: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--suma);
+  font-weight: 700;
+  font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+}
+
+.recta-arco.is-nuevo{ animation: llega 0.5s var(--ease-out); transform-origin: left bottom; }
+
+.recta-ficha{
+  position: absolute;
+  bottom: 34px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--amarillo);
+  box-shadow: 0 0 0 4px var(--azul-oscuro);
+  transform: translateX(-50%);
+}
+
+/* Intro de multiplicación: los grupos no se mezclan y muestran su cuenta */
+.intro-escena--grupos{ --f: clamp(30px, 5.4vw, 46px); gap: clamp(14px, 3vw, 26px) !important; }
+.intro-escena--grupos .intro-grupo{
+  position: relative;
+  padding: 12px !important;
+  box-shadow: inset 0 0 0 2px var(--linea-fuerte) !important;
+}
+.intro-escena--grupos:not([data-paso="0"]) .intro-grupo::after{
+  content: attr(data-total);
+  position: absolute;
+  top: -16px;
+  right: -12px;
+  display: grid;
+  place-items: center;
+  min-width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: var(--amarillo);
+  color: var(--azul-oscuro);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+/* Diagnóstico para el adulto */
+.diagnostico h3{ margin: 18px 0 8px; font-size: 1.15rem; font-weight: 600; }
+.diagnostico ul{ display: grid; gap: 6px; margin: 0 0 16px; padding-left: 1.2em; color: var(--texto-suave); }
+.diagnostico b{ color: #ffffff; font-weight: 600; }
+
+@media (max-width: 420px){
+  .grupo-multi--filas .ranura,
+  .grupo-multi--filas .ficha{ --ficha: 36px; }
 }
 
 /* ===========================

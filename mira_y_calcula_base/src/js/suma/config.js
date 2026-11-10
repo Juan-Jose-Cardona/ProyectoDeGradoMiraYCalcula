@@ -8,6 +8,8 @@
 window.Suma = window.Suma || {};
 
 Suma.CONFIG = {
+  operacion: 'suma',
+
   // Clave de localStorage (cambiar la versión invalida partidas viejas)
   claveGuardado: 'miraYCalcula.suma.v1',
 
@@ -38,6 +40,20 @@ Suma.CONFIG = {
     acierto: 'src/sonidos/correct.mp3'
   },
 
+  // Textos propios de la operación (el motor es compartido con la resta)
+  textos: {
+    nombre: 'Suma',
+    plural: 'sumas',
+    accion: 'juntando y contando objetos',
+    practicaCasa: 'intenta sumar objetos de tu casa: cucharas, juguetes o frutas.',
+    tutorialFin: (p) => `¡Lo hiciste! Juntaste ${p.a} y ${p.b}, contaste todo y encontraste el total: ${p.total}. Ya sabes sumar.`,
+    intro: [
+      { titulo: 'Sumar es juntar', texto: 'Aquí hay dos grupos: 3 fichas rojas y 2 fichas amarillas.' },
+      { titulo: 'Juntamos los grupos', texto: 'Ponemos todas las fichas en el mismo lugar. Ya no son dos grupos: es uno solo.' },
+      { titulo: 'Contamos todo', texto: '1, 2, 3, 4, 5. ¡Hay 5! Por eso decimos: 3 más 2 es igual a 5.' }
+    ]
+  },
+
   // Objetos con contexto para el nivel 5
   objetos: [
     { id: 'manzana',  singular: 'manzana',  plural: 'manzanas',  img: 'src/img/manzana.png',  genero: 'f' },
@@ -59,30 +75,35 @@ Suma.CONFIG = {
   niveles: [
     {
       numero: 1, titulo: 'Juntar pocos',
+      logro: 'Juntar grupos pequeños y contarlos.',
       descripcion: 'Junta dos grupos pequeños y cuenta cuántos hay en total.',
       rangoA: [1, 4], rangoB: [1, 4], rangoTotal: [2, 5],
       modo: 'juntar', ranuras: 5
     },
     {
       numero: 2, titulo: 'Juntar hasta 10',
+      logro: 'Contar con cuidado hasta 10.',
       descripcion: 'Ahora los grupos son un poco más grandes. ¡Cuenta con calma!',
       rangoA: [2, 7], rangoB: [2, 7], rangoTotal: [6, 10],
       modo: 'juntar', ranuras: 10
     },
     {
       numero: 3, titulo: 'Seguir contando',
+      logro: 'Seguir contando desde un número, sin volver a empezar.',
       descripcion: 'Un grupo ya está en la caja. No hace falta contarlo otra vez: sigue contando desde ese número.',
       rangoA: [4, 8], rangoB: [1, 3], rangoTotal: [5, 11],
       modo: 'contarDesde', ranuras: 10
     },
     {
       numero: 4, titulo: 'Formar la decena',
+      logro: 'Llenar una decena y sumar lo que queda.',
       descripcion: 'Llena una caja de 10 y mira cuántas fichas quedan afuera.',
       rangoA: [6, 9], rangoB: [3, 9], rangoTotal: [11, 18],
       modo: 'juntar', ranuras: 20, decenas: true
     },
     {
       numero: 5, titulo: 'Problemas de la vida',
+      logro: 'Entender una historia y convertirla en suma.',
       descripcion: 'Lee (o escucha) la historia, junta los objetos y descubre el total.',
       rangoA: [5, 10], rangoB: [2, 8], rangoTotal: [8, 18],
       modo: 'contarDesde', ranuras: 20, decenas: true, conContexto: true
