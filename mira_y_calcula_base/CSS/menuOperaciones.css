@@ -915,3 +915,11 @@ svg use{ pointer-events: none; }
 @media (prefers-reduced-motion: reduce){
   .bajar{ animation: none; }
 }
+
+/* Celular: "Multiplicación" y su símbolo deben caber en pantallas de 360px */
+@media (max-width: 480px){
+  .op-titulo{
+    gap: 0.7rem;
+    font-size: clamp(1.9rem, 9vw, 3rem);
+  }
+}
