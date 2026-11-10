@@ -87,7 +87,7 @@ const resetBtn = document.getElementById('resetBtn');
 /*  UTIL === */
 function rand(min,max){ return Math.floor(Math.random()*(max-min)+min); }
 const params = new URLSearchParams(window.location.search);
-const nivel = parseInt(params.get("nivel"));
+const nivel = parseInt(params.get("nivel")) || 1; // sin nivel en la URL, empieza en el 1
 
 function px(v) {
     if (typeof v === "number") return v;
